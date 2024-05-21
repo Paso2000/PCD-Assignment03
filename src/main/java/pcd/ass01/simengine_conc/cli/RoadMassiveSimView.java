@@ -1,6 +1,9 @@
-package part1.simengine_conc.cli;
+package pcd.ass01.simengine_conc.cli;
 
-import pcd.ass01.simengine_conc.*;
+
+import pcd.ass01.simengine_conc.AbstractAgent;
+import pcd.ass01.simengine_conc.AbstractEnvironment;
+import pcd.ass01.simengine_conc.SimulationListener;
 import pcd.ass01.simtraffic_conc.*;
 
 import javax.swing.*;

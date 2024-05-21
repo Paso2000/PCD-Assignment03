@@ -1,7 +1,5 @@
 package pcd.ass01.simtraffic_conc_examples;
 
-import java.util.Random;
-
 import pcd.ass01.simengine_conc.*;
 import pcd.ass01.simtraffic_conc.*;
 

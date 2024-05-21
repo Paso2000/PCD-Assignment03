@@ -1,4 +1,4 @@
-package pcd.ass01.simtraffic_concexamples;
+package pcd.ass01.simtraffic_conc_examples;
 
 import pcd.ass01.simengine_conc.*;
 import pcd.ass01.simtraffic_conc.*;

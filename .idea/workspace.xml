@@ -4,7 +4,60 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0ed3ea00-f665-4082-ad21-81633648a582" name="Changes" comment="" />
+    <list default="true" id="0ed3ea00-f665-4082-ad21-81633648a582" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/AbstractAgent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/AbstractEnvironment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/AbstractSimulation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/Action.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/Flag.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/GUI/RoadMassiveSimView.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/GUI/RoadSimStatistics.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/GUI/RoadSimView.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/GUI/RunTrafficSimulation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/GUI/SimulationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/GUI/SimulationGUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/GUI/SimulationGUIFrame.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/MasterAgent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/Percept.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/SimulationListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/SimulatorView.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/Trigger.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/WorkerAgent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/cli/RoadMassiveSimView.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/cli/RoadSimStatistics.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/cli/RoadSimView.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/cli/RunTrafficSimulation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simengine_conc/cli/RunTrafficSimulationMassiveTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc/AbstractCar.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc/CarBasic.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc/CarExtended.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc/CarPercept.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc/MoveForward.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc/P2d.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc/Road.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc/RoadsEnv.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc/TrafficLight.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc/TrafficLightInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc/V2d.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc_examples/TrafficSimulationSingleRoadMassiveNumberOfCars.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc_examples/TrafficSimulationSingleRoadSeveralCars.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc_examples/TrafficSimulationSingleRoadTwoCars.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc_examples/TrafficSimulationSingleRoadWithTrafficLightTwoCars.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pcd/ass01/simtraffic_conc_examples/TrafficSimulationWithCrossRoads.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,6 +67,13 @@
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -36,9 +96,43 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/lucap/Desktop/Universita/Concurrent_and_dist_PROG/PCD-Assignment03/src/main/java/part1/simtraffic_concexamples",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\lucap\Desktop\Universita\Concurrent_and_dist_PROG\PCD-Assignment03\src\main\java\part1\simtraffic_concexamples" />
+      <recent name="C:\Users\lucap\Desktop\Universita\Concurrent_and_dist_PROG\PCD-Assignment03\src\main\java\part1\simtraffic_conc" />
+      <recent name="C:\Users\lucap\Desktop\Universita\Concurrent_and_dist_PROG\PCD-Assignment03\src\main\java\part1\simengine_conc\GUI" />
+      <recent name="C:\Users\lucap\Desktop\Universita\Concurrent_and_dist_PROG\PCD-Assignment03\src\main\java\part1\simengine_conc\cli" />
+      <recent name="C:\Users\lucap\Desktop\Universita\Concurrent_and_dist_PROG\PCD-Assignment03\src\main\java\part1\simengine_conc" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="RunTrafficSimulation" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="pcd.ass01.simengine_conc.cli.RunTrafficSimulation" />
+      <module name="PCD-Assignment03.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="pcd.ass01.simengine_conc.cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.RunTrafficSimulation" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -47,8 +141,11 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1716299278627</updated>
-      <workItem from="1716299279788" duration="4000" />
+      <workItem from="1716299279788" duration="1664000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>
