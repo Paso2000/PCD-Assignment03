@@ -1,11 +1,19 @@
 package pcd.part1.simengine_conc;
 
+import akka.actor.typed.Behavior;
+import akka.actor.typed.javadsl.AbstractBehavior;
+import akka.actor.typed.javadsl.ActorContext;
+import akka.actor.typed.javadsl.Behaviors;
+import akka.actor.typed.javadsl.Receive;
+import pcd.part1.simengine_conc.message.MasterContenxt;
+import pcd.part1.simengine_conc.message.WorkerContext;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 
-public class MasterAgent extends Thread {
+public class MasterAgent extends AbstractBehavior<MasterContenxt> {
 	
 	private boolean toBeInSyncWithWallTime;
 	private int nStepsPerSec;
@@ -18,7 +26,8 @@ public class MasterAgent extends Thread {
 	private Semaphore done;
 	private int nWorkers;
 	
-	public MasterAgent(AbstractSimulation sim, int nWorkers, int numSteps, Flag stopFlag, Semaphore done, boolean syncWithTime) {
+	public MasterAgent(ActorContext<MasterContenxt> context, AbstractSimulation sim,int nWorkers, int numSteps, Flag stopFlag, Semaphore done, boolean syncWithTime) {
+		super(context);
 		toBeInSyncWithWallTime = false;
 		this.sim = sim;
 		this.stopFlag = stopFlag;
@@ -142,6 +151,21 @@ public class MasterAgent extends Thread {
 	private void log(String msg) {
 		System.out.println("[MASTER] " + msg);
 	}
-	
-	
+
+
+	@Override
+	public Receive<MasterContenxt> createReceive() {
+		return null;
+//		return newReceiveBuilder()
+//				.onMessage(MasterContenxt.InitSimulation.class, this::onPong)
+//				.onMessage(MasterContenxt.FinishStep.class, this::onPing)
+//				.onMessage(WorkerContext.DoStep.class, this::onPing)
+//				.onMessage(MasterContenxt.FinishSimulation.class, this::onPing)
+//				.onMessage(MasterContenxt.StopSimulation.class, this::onPing)
+//				.build();
+	}
+
+	public static Behavior<MasterContenxt> create(AbstractSimulation sim, int nWorker, int numSteps, Flag stopFlag, Semaphore done,boolean syncWithTime) {
+		return Behaviors.setup(context -> new MasterAgent(context,sim,nWorker,numSteps,stopFlag,done,syncWithTime));
+	}
 }

@@ -10,6 +10,7 @@ repositories {
 }
 
 dependencies {
+    implementation ("com.typesafe.akka:akka-actor-typed_2.13:2.6.18")
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
