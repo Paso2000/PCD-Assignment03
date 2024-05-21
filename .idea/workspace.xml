@@ -6,12 +6,20 @@
   <component name="ChangeListManager">
     <list default="true" id="0ed3ea00-f665-4082-ad21-81633648a582" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+<<<<<<< HEAD
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+>>>>>>> 88764ba2501a9aa1934e995bfeaa158b8ca6bf76
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
@@ -61,7 +69,11 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "main",
+<<<<<<< HEAD
     "last_opened_file_path": "C:/Users/lucap/Desktop/Universita/Concurrent_and_dist_PROG/pcd-lab-akka-actors",
+=======
+    "last_opened_file_path": "C:/Users/lucap/Desktop/Universita/Concurrent_and_dist_PROG/PCD-Assignment03/src/main/java/part1/simtraffic_concexamples",
+>>>>>>> 88764ba2501a9aa1934e995bfeaa158b8ca6bf76
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -108,7 +120,11 @@
       <option name="presentableId" value="Default" />
       <updated>1716299278627</updated>
       <workItem from="1716299279788" duration="1664000" />
+<<<<<<< HEAD
       <workItem from="1716301355753" duration="1687000" />
+=======
+      <workItem from="1716301823655" duration="879000" />
+>>>>>>> 88764ba2501a9aa1934e995bfeaa158b8ca6bf76
     </task>
     <servers />
   </component>
