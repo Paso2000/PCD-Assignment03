@@ -1,5 +1,6 @@
 package pcd.part1.simengine_conc;
 
+import akka.actor.Props;
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.ActorSystem;
 import pcd.part1.simengine_conc.message.MasterContext;
@@ -43,7 +44,8 @@ public abstract class AbstractSimulation {
 		//MasterAgent agent = new MasterAgent(this, nWorkers, nSteps, stopFlag, done, syncWithTime);
 		//agent.start();
 
-		ActorRef<MasterContext> master = ActorSystem.create(MasterAgent.create(this,nWorkers,nSteps,stopFlag,done,syncWithTime),"car simulation");
+		//crei figli
+		ActorRef<MasterContext> master = ActorSystem.create(MasterAgent.create(this,nWorkers,nSteps,stopFlag,done,syncWithTime),"car_simulation");
 		master.tell(new MasterContext.InitSimulation());
 		try {
 			done.acquire();

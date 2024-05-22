@@ -1,53 +1,53 @@
 package pcd.part1.simengine_conc;
 
+import akka.actor.typed.Behavior;
+import akka.actor.typed.javadsl.AbstractBehavior;
+import akka.actor.typed.javadsl.ActorContext;
+import akka.actor.typed.javadsl.Behaviors;
+import akka.actor.typed.javadsl.Receive;
+import pcd.part1.simengine_conc.message.MasterContext;
+import pcd.part1.simengine_conc.message.WorkerContext;
+
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 
-public class WorkerAgent extends Thread {
+public class WorkerAgent extends AbstractBehavior<WorkerContext> {
 	
-	private List<AbstractAgent> assignedSimAgents;
+	private AbstractAgent assignedSimAgents;
 	private Trigger canDoStep;
 	private int dt;
 	private Flag stopFlag;
 	private CyclicBarrier jobDone;
 	
-	public WorkerAgent(String id, List<AbstractAgent> assignedSimAgents, int dt, Trigger canDoStep, CyclicBarrier jobDone, Flag flag) {
-		super(id);
+	public WorkerAgent(ActorContext<WorkerContext> context, AbstractAgent assignedSimAgents, int dt) {
+		super(context);
 		this.assignedSimAgents = assignedSimAgents;
 		this.dt = dt;
 		this.canDoStep = canDoStep;
-		this.stopFlag = flag;
 		this.jobDone = jobDone;
 	}
-	
-	public void run() {
-		log("running.");
-		while (!stopFlag.isSet()) {
-			try {
-				
-				/* waiting master trigger */
-				canDoStep.await();
-				
-				if (!stopFlag.isSet()) {
-				
-					/* moving on agents */
-					for (var ag: assignedSimAgents) {
-						ag.step(dt);
-					}
-					
-					/* sync step done */
-					jobDone.await();
-				}
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		log("done");
+
+    public static Behavior<WorkerContext> create(AbstractAgent agent, int dt) {
+		return Behaviors.setup(context -> new WorkerAgent(context,agent,dt));
+    }
+
+
+
+
+
+	@Override
+	public Receive<WorkerContext> createReceive() {
+		return newReceiveBuilder()
+				.onMessage(WorkerContext.DoStep.class, this::onStep)
+				.build();
 	}
-	
-	private void log(String msg) {
-		System.out.println("[" + getName() +"] " + msg);
+
+	private Behavior<WorkerContext> onStep(WorkerContext.DoStep doStep) {
+		return Behaviors.setup(context->{
+			assignedSimAgents.step(dt);
+			System.out.println("finished step");
+			doStep.replyTo.tell(new MasterContext.FinishStep());
+			return Behaviors.same();
+		});
 	}
-	
-	
 }
