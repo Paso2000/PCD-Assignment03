@@ -5,15 +5,14 @@ import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
-import pcd.part1.simengine_conc.message.MasterContenxt;
-import pcd.part1.simengine_conc.message.WorkerContext;
+import pcd.part1.simengine_conc.message.MasterContext;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 
-public class MasterAgent extends AbstractBehavior<MasterContenxt> {
+public class MasterAgent extends AbstractBehavior<MasterContext> {
 	
 	private boolean toBeInSyncWithWallTime;
 	private int nStepsPerSec;
@@ -26,7 +25,7 @@ public class MasterAgent extends AbstractBehavior<MasterContenxt> {
 	private Semaphore done;
 	private int nWorkers;
 	
-	public MasterAgent(ActorContext<MasterContenxt> context, AbstractSimulation sim,int nWorkers, int numSteps, Flag stopFlag, Semaphore done, boolean syncWithTime) {
+	public MasterAgent(ActorContext<MasterContext> context, AbstractSimulation sim, int nWorkers, int numSteps, Flag stopFlag, Semaphore done, boolean syncWithTime) {
 		super(context);
 		toBeInSyncWithWallTime = false;
 		this.sim = sim;
@@ -154,33 +153,33 @@ public class MasterAgent extends AbstractBehavior<MasterContenxt> {
 
 
 	@Override
-	public Receive<MasterContenxt> createReceive() {
+	public Receive<MasterContext> createReceive() {
 		return newReceiveBuilder()
-				.onMessage(MasterContenxt.InitSimulation.class, this::onInit)
-				.onMessage(MasterContenxt.FinishStep.class, this::ExecuteStep)
-				.onMessage(MasterContenxt.FinishSimulation.class, this::onFinish)
-				.onMessage(MasterContenxt.StopSimulation.class, this::onStop)
+				.onMessage(MasterContext.InitSimulation.class, this::onInit)
+				.onMessage(MasterContext.FinishStep.class, this::ExecuteStep)
+				.onMessage(MasterContext.FinishSimulation.class, this::onFinish)
+				.onMessage(MasterContext.StopSimulation.class, this::onStop)
 				.build();
 	}
 
-	private Behavior<MasterContenxt> onStop(MasterContenxt.StopSimulation stopSimulation) {
+	private Behavior<MasterContext> onStop(MasterContext.StopSimulation stopSimulation) {
 		return null;
 	}
 
-	private Behavior<MasterContenxt> onInit(MasterContenxt.InitSimulation initSimulation) {
+	private Behavior<MasterContext> onInit(MasterContext.InitSimulation initSimulation) {
 		return null;
 	}
 
-	private Behavior<MasterContenxt> onFinish(MasterContenxt.FinishSimulation finishSimulation) {
+	private Behavior<MasterContext> onFinish(MasterContext.FinishSimulation finishSimulation) {
 		return null;
 	}
 
-	private Behavior<MasterContenxt> ExecuteStep(MasterContenxt.FinishStep finishStep) {
+	private Behavior<MasterContext> ExecuteStep(MasterContext.FinishStep finishStep) {
 		return null;
 	}
 
 
-	public static Behavior<MasterContenxt> create(AbstractSimulation sim, int nWorker, int numSteps, Flag stopFlag, Semaphore done,boolean syncWithTime) {
+	public static Behavior<MasterContext> create(AbstractSimulation sim, int nWorker, int numSteps, Flag stopFlag, Semaphore done,boolean syncWithTime) {
 		return Behaviors.setup(context -> new MasterAgent(context,sim,nWorker,numSteps,stopFlag,done,syncWithTime));
 	}
 }
