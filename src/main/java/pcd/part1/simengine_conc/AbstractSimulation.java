@@ -2,7 +2,7 @@ package pcd.part1.simengine_conc;
 
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.ActorSystem;
-import pcd.part1.simengine_conc.message.MasterContenxt;
+import pcd.part1.simengine_conc.message.MasterContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +43,8 @@ public abstract class AbstractSimulation {
 		//MasterAgent agent = new MasterAgent(this, nWorkers, nSteps, stopFlag, done, syncWithTime);
 		//agent.start();
 
-		ActorRef<MasterContenxt> master = ActorSystem.create(MasterAgent.create(this,nWorkers,nSteps,stopFlag,done,syncWithTime),"car simulation");
-		master.tell(new MasterContenxt.InitSimulation());
+		ActorRef<MasterContext> master = ActorSystem.create(MasterAgent.create(this,nWorkers,nSteps,stopFlag,done,syncWithTime),"car simulation");
+		master.tell(new MasterContext.InitSimulation());
 		try {
 			done.acquire();
 		} catch (Exception ex) {

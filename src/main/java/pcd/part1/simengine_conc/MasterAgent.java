@@ -5,15 +5,14 @@ import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
-import pcd.part1.simengine_conc.message.MasterContenxt;
-import pcd.part1.simengine_conc.message.WorkerContext;
+import pcd.part1.simengine_conc.message.MasterContext;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 
-public class MasterAgent extends AbstractBehavior<MasterContenxt> {
+public class MasterAgent extends AbstractBehavior<MasterContext> {
 	
 	private boolean toBeInSyncWithWallTime;
 	private int nStepsPerSec;
@@ -26,7 +25,7 @@ public class MasterAgent extends AbstractBehavior<MasterContenxt> {
 	private Semaphore done;
 	private int nWorkers;
 	
-	public MasterAgent(ActorContext<MasterContenxt> context, AbstractSimulation sim,int nWorkers, int numSteps, Flag stopFlag, Semaphore done, boolean syncWithTime) {
+	public MasterAgent(ActorContext<MasterContext> context, AbstractSimulation sim, int nWorkers, int numSteps, Flag stopFlag, Semaphore done, boolean syncWithTime) {
 		super(context);
 		toBeInSyncWithWallTime = false;
 		this.sim = sim;
@@ -154,7 +153,7 @@ public class MasterAgent extends AbstractBehavior<MasterContenxt> {
 
 
 	@Override
-	public Receive<MasterContenxt> createReceive() {
+	public Receive<MasterContext> createReceive() {
 		return null;
 //		return newReceiveBuilder()
 //				.onMessage(MasterContenxt.InitSimulation.class, this::onPong)
@@ -165,7 +164,7 @@ public class MasterAgent extends AbstractBehavior<MasterContenxt> {
 //				.build();
 	}
 
-	public static Behavior<MasterContenxt> create(AbstractSimulation sim, int nWorker, int numSteps, Flag stopFlag, Semaphore done,boolean syncWithTime) {
+	public static Behavior<MasterContext> create(AbstractSimulation sim, int nWorker, int numSteps, Flag stopFlag, Semaphore done, boolean syncWithTime) {
 		return Behaviors.setup(context -> new MasterAgent(context,sim,nWorker,numSteps,stopFlag,done,syncWithTime));
 	}
 }
