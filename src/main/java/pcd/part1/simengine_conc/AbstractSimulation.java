@@ -45,7 +45,7 @@ public abstract class AbstractSimulation {
 		//agent.start();
 
 		//crei figli
-		ActorRef<MasterContext> master = ActorSystem.create(MasterAgent.create(this,nWorkers,nSteps,stopFlag,done,syncWithTime),"car_simulation");
+		ActorRef<MasterContext> master = ActorSystem.create(MasterAgent.create(this,nSteps,syncWithTime),"car_simulation");
 		master.tell(new MasterContext.InitSimulation());
 		try {
 			done.acquire();

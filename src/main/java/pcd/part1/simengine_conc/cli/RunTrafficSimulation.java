@@ -17,10 +17,10 @@ public class RunTrafficSimulation {
 		int nWorkers = Runtime.getRuntime().availableProcessors() + 1;
 		
 		// var simulation = new TrafficSimulationSingleRoadTwoCars();
-		// var simulation = new TrafficSimulationSingleRoadSeveralCars();
+		 var simulation = new TrafficSimulationSingleRoadSeveralCars();
 		// var simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
 
-		var simulation = new TrafficSimulationWithCrossRoads();
+		//var simulation = new TrafficSimulationWithCrossRoads();
 		simulation.configureNumWorkers(nWorkers);
 		simulation.setup();
 		

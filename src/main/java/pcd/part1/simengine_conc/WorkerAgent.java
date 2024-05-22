@@ -13,22 +13,15 @@ import java.util.concurrent.CyclicBarrier;
 
 public class WorkerAgent extends AbstractBehavior<WorkerContext> {
 	
-	private AbstractAgent assignedSimAgents;
-	private Trigger canDoStep;
-	private int dt;
-	private Flag stopFlag;
-	private CyclicBarrier jobDone;
+	private final AbstractAgent assignedSimAgents;
 	
-	public WorkerAgent(ActorContext<WorkerContext> context, AbstractAgent assignedSimAgents, int dt) {
+	public WorkerAgent(ActorContext<WorkerContext> context, AbstractAgent assignedSimAgents) {
 		super(context);
 		this.assignedSimAgents = assignedSimAgents;
-		this.dt = dt;
-		this.canDoStep = canDoStep;
-		this.jobDone = jobDone;
 	}
 
     public static Behavior<WorkerContext> create(AbstractAgent agent, int dt) {
-		return Behaviors.setup(context -> new WorkerAgent(context,agent,dt));
+		return Behaviors.setup(context -> new WorkerAgent(context,agent));
     }
 
 
@@ -44,7 +37,7 @@ public class WorkerAgent extends AbstractBehavior<WorkerContext> {
 
 	private Behavior<WorkerContext> onStep(WorkerContext.DoStep doStep) {
 		return Behaviors.setup(context->{
-			assignedSimAgents.step(dt);
+			assignedSimAgents.step(doStep.dt);
 			System.out.println("finished step");
 			doStep.replyTo.tell(new MasterContext.FinishStep());
 			return Behaviors.same();
