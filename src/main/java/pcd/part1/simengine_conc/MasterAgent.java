@@ -155,15 +155,30 @@ public class MasterAgent extends AbstractBehavior<MasterContenxt> {
 
 	@Override
 	public Receive<MasterContenxt> createReceive() {
-		return null;
-//		return newReceiveBuilder()
-//				.onMessage(MasterContenxt.InitSimulation.class, this::onPong)
-//				.onMessage(MasterContenxt.FinishStep.class, this::onPing)
-//				.onMessage(WorkerContext.DoStep.class, this::onPing)
-//				.onMessage(MasterContenxt.FinishSimulation.class, this::onPing)
-//				.onMessage(MasterContenxt.StopSimulation.class, this::onPing)
-//				.build();
+		return newReceiveBuilder()
+				.onMessage(MasterContenxt.InitSimulation.class, this::onInit)
+				.onMessage(MasterContenxt.FinishStep.class, this::ExecuteStep)
+				.onMessage(MasterContenxt.FinishSimulation.class, this::onFinish)
+				.onMessage(MasterContenxt.StopSimulation.class, this::onStop)
+				.build();
 	}
+
+	private Behavior<MasterContenxt> onStop(MasterContenxt.StopSimulation stopSimulation) {
+		return null;
+	}
+
+	private Behavior<MasterContenxt> onInit(MasterContenxt.InitSimulation initSimulation) {
+		return null;
+	}
+
+	private Behavior<MasterContenxt> onFinish(MasterContenxt.FinishSimulation finishSimulation) {
+		return null;
+	}
+
+	private Behavior<MasterContenxt> ExecuteStep(MasterContenxt.FinishStep finishStep) {
+		return null;
+	}
+
 
 	public static Behavior<MasterContenxt> create(AbstractSimulation sim, int nWorker, int numSteps, Flag stopFlag, Semaphore done,boolean syncWithTime) {
 		return Behaviors.setup(context -> new MasterAgent(context,sim,nWorker,numSteps,stopFlag,done,syncWithTime));
