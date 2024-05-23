@@ -35,6 +35,10 @@ bin/
 /nbdist/
 /.nb-gradle/
 
+####scala sbt###
+/sbt-subproject/project/targets
+
+
 ### VS Code ###
 .vscode/
 
