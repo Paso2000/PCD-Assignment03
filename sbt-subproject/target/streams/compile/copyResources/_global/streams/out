@@ -1,2 +1,8 @@
 [0m[[0m[0mdebug[0m] [0m[0mCopy resource mappings: [0m
-[0m[[0m[0mdebug[0m] [0m[0m	[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\src\main\resources\application_cluster.conf,C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\target\scala-3.3.3\classes\application_cluster.conf)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\src\main\resources\base-cluster-no-seed.conf,C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\target\scala-3.3.3\classes\base-cluster-no-seed.conf)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\src\main\resources\base-cluster.conf,C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\target\scala-3.3.3\classes\base-cluster.conf)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\src\main\resources\base-remote.conf,C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\target\scala-3.3.3\classes\base-remote.conf)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\src\main\resources\logback.xml,C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\target\scala-3.3.3\classes\logback.xml)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\src\main\resources\stats.conf,C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\target\scala-3.3.3\classes\stats.conf)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\src\main\resources\transformation.conf,C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\target\scala-3.3.3\classes\transformation.conf)[0m
