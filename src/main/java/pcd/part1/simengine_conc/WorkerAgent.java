@@ -25,9 +25,6 @@ public class WorkerAgent extends AbstractBehavior<WorkerContext> {
     }
 
 
-
-
-
 	@Override
 	public Receive<WorkerContext> createReceive() {
 		return newReceiveBuilder()

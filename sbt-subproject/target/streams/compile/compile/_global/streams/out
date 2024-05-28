@@ -1,5 +1,9 @@
-[0m[[0m[33mwarn[0m] [0m[0m[33m[33m-- Warning: C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\src\main\scala\it\unibo\pcd\akka\cluster\example\stats\StatsClient.scala:24:49 [0m[0m[0m
-[0m[[0m[33mwarn[0m] [0m[0m[33m24 |[0m        [33mval[0m [36mresponseAdapter[0m = ctx.messageAdapter(ServiceResponse)[0m
-[0m[[0m[33mwarn[0m] [0m[0m[33m[33m   |[0m                                                 ^^^^^^^^^^^^^^^[0m[0m
-[0m[[0m[33mwarn[0m] [0m[0m[33m   |[0mThe method `apply` is inserted. The auto insertion will be deprecated, please write `it.unibo.pcd.akka.cluster.example.stats.StatsClient.Event.ServiceResponse.apply` explicitly.[0m
-[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E008] Not Found Error: C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\src\main\scala\it\unibo\pcd\akka\part2A\SudokuGUI.scala:14:42 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m14 |[0m    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m                                   ^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m        value EXIT_ON_CLOSE is not a member of object javax.swing.JFrame[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E008] Not Found Error: C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\src\main\scala\it\unibo\pcd\akka\part2A\SudokuGUI.scala:24:45 [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m24 |[0m      cell.setHorizontalAlignment(JTextField.CENTER)[0m
+[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m                                  ^^^^^^^^^^^^^^^^^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m   |[0m           value CENTER is not a member of object javax.swing.JTextField[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
