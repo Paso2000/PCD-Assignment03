@@ -9,6 +9,7 @@ package pcd.part1.simengine_conc.GUI;
  */
 public class SimulationGUI {
 
+	//view di MVC
 	private SimulationGUIFrame gui;
 	
 	public SimulationGUI(int initialValue){	

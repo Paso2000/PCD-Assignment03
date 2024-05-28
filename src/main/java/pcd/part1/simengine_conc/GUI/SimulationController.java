@@ -4,6 +4,8 @@ import pcd.part1.simengine_conc.*;
 
 public class SimulationController {
 
+	//controller MVC
+	//convertibile in attore
 	private Flag stopFlag;
 	private AbstractSimulation simulation;
 	private SimulationGUI gui;
