@@ -36,7 +36,10 @@ bin/
 /.nb-gradle/
 
 ####scala sbt###
-/sbt-subproject/project/targets
+/sbt-subproject/project/target
+.bsp
+sbt-subproject/target
+target
 
 
 ### VS Code ###

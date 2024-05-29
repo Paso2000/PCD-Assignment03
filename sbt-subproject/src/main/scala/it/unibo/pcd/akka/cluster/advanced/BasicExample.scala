@@ -30,6 +30,8 @@ object Root:
 @main def multipleAnts: Unit =
   startupWithRole(Roles.frontend, seeds.head)(Root())
   startupWithRole(Roles.backend, seeds.last)(Root())
+  startupWithRole(Roles.frontend, seeds.head)(Root())
+
 
 @main def anotherFrontend: Unit =
   startupWithRole(Roles.frontend, 8081)(Root())
