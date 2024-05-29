@@ -19,6 +19,7 @@ public class App {
   private static class RootBehavior {
     static Behavior<Void> create() {
       return Behaviors.setup(context -> {
+        //inserisce il nodo nel cluster
         Cluster cluster = Cluster.get(context.getSystem());
 
         if (cluster.selfMember().hasRole("backend")) {
