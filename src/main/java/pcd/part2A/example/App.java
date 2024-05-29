@@ -57,7 +57,7 @@ public class App {
 
   private static void startup(String role, int port) {
 
-    System.out.println(role  + ":" + port + " started");
+    //System.out.println(role  + ":" + port + " started");
     // Override the configuration of the port
     Map<String, Object> overrides = new HashMap<>();
     overrides.put("akka.remote.artery.canonical.port", port);
