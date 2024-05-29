@@ -11,7 +11,7 @@ import pcd.part1.simengine_conc.*;
 import pcd.part1.simengine_conc.message.ControllerContext;
 import pcd.part1.simengine_conc.message.MasterContext;
 
-public class SimulationController extends AbstractBehavior<ControllerContext> {
+public class SimulationActor extends AbstractBehavior<ControllerContext> {
 
 	//controller MVC
 	//convertibile in attore
@@ -22,7 +22,7 @@ public class SimulationController extends AbstractBehavior<ControllerContext> {
 	private RoadSimView view;
 	private RoadSimStatistics stat;
 	 
-	public SimulationController(ActorContext<ControllerContext> context, AbstractSimulation simulation) {
+	public SimulationActor(ActorContext<ControllerContext> context, AbstractSimulation simulation) {
 		super(context);
 		this.simulation = simulation;
 		this.stopFlag = new Flag();
@@ -30,7 +30,7 @@ public class SimulationController extends AbstractBehavior<ControllerContext> {
 	}
 
 	public static Behavior<ControllerContext> create(AbstractSimulation simulation) {
-		return Behaviors.setup(context -> new SimulationController(context,simulation));
+		return Behaviors.setup(context -> new SimulationActor(context,simulation));
 	}
 
 	public void notifyStarted(int nSteps) {
@@ -39,7 +39,7 @@ public class SimulationController extends AbstractBehavior<ControllerContext> {
 			simulation.setup();			
 			view.display();
 			stopFlag.reset();
-			ActorRef<MasterContext> master = ActorSystem.create(MasterAgent.create(simulation,nSteps,true),"car_simulation");
+			ActorRef<MasterContext> master = ActorSystem.create(MasterActor.create(simulation,nSteps,true),"car_simulation");
 			master.tell(new MasterContext.InitSimulation());
 			gui.reset();
 			
@@ -75,7 +75,7 @@ public class SimulationController extends AbstractBehavior<ControllerContext> {
 			simulation.setup();
 			view.display();
 			stopFlag.reset();
-			master = context.spawn(MasterAgent.create(simulation,initSimulation.nStep,true),"car_simulation");
+			master = context.spawn(MasterActor.create(simulation,initSimulation.nStep,true),"car_simulation");
 			master.tell(new MasterContext.InitSimulation());
 			return Behaviors.same();
 		});

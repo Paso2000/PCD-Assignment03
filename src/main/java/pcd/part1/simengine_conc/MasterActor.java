@@ -11,9 +11,8 @@ import pcd.part1.simengine_conc.message.WorkerContext;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
-public class MasterAgent extends AbstractBehavior<MasterContext> {
+public class MasterActor extends AbstractBehavior<MasterContext> {
 
 	private AbstractEnvironment simEnv;
 	private int t;
@@ -32,7 +31,7 @@ public class MasterAgent extends AbstractBehavior<MasterContext> {
 
 	private final List<ActorRef<WorkerContext>> childrens;
 	
-	public MasterAgent(ActorContext<MasterContext> context, AbstractSimulation sim, int numSteps, boolean syncWithTime) {
+	public MasterActor(ActorContext<MasterContext> context, AbstractSimulation sim, int numSteps, boolean syncWithTime) {
 		super(context);
 		childrens = new ArrayList<>();
 		toBeInSyncWithWallTime = false;
@@ -91,7 +90,7 @@ public class MasterAgent extends AbstractBehavior<MasterContext> {
 			simEnv.step(dt);
 			simEnv.cleanActions();
 			for (int i = 0; i < agentList.size(); i++) {
-				ActorRef<WorkerContext> child = context.spawn(WorkerAgent.create(agentList.get(i),dt), "child" + i);
+				ActorRef<WorkerContext> child = context.spawn(WorkerActor.create(agentList.get(i),dt), "child" + i);
 				childrens.add(child);
 			}
 			ActorRef<MasterContext> self = getContext().getSelf();
@@ -138,6 +137,6 @@ public class MasterAgent extends AbstractBehavior<MasterContext> {
 
 
 	public static Behavior<MasterContext> create(AbstractSimulation sim, int numSteps,boolean syncWithTime) {
-		return Behaviors.setup(context -> new MasterAgent(context,sim,numSteps,syncWithTime));
+		return Behaviors.setup(context -> new MasterActor(context,sim,numSteps,syncWithTime));
 	}
 }

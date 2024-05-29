@@ -35,7 +35,7 @@ public class RunTrafficSimulation {
 		simulation.addSimulationListener(view);		
 		
 		Flag stopFlag = new Flag();
-		ActorRef<MasterContext> master = ActorSystem.create(MasterAgent.create(simulation,DEFAULT_STEPS,true),"car_simulation");
+		ActorRef<MasterContext> master = ActorSystem.create(MasterActor.create(simulation,DEFAULT_STEPS,true),"car_simulation");
 		master.tell(new MasterContext.InitSimulation());
 	}
 }

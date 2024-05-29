@@ -18,7 +18,7 @@ public class SimulationGUIFrame extends JFrame implements ActionListener {
 
 	private ActorRef<ControllerContext> actorConttroller;
 	
-	private SimulationController controller;
+	private SimulationActor controller;
 	
 	public SimulationGUIFrame(int initialValue, ActorRef<ControllerContext> controller){
 		this.actorConttroller =controller;
@@ -60,7 +60,7 @@ public class SimulationGUIFrame extends JFrame implements ActionListener {
 		stop.addActionListener(this);
 	}
 	
-	public void setController(SimulationController contr) {
+	public void setController(SimulationActor contr) {
 		this.controller = contr;
 	}
 	

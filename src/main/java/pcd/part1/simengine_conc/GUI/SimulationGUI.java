@@ -19,7 +19,7 @@ public class SimulationGUI {
 		gui = new SimulationGUIFrame(initialValue, controller);
 	}
 	
-	public void setController(SimulationController contr) {
+	public void setController(SimulationActor contr) {
 		gui.setController(contr);
 	}
 

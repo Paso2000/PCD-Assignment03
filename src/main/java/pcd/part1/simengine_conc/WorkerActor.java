@@ -8,20 +8,17 @@ import akka.actor.typed.javadsl.Receive;
 import pcd.part1.simengine_conc.message.MasterContext;
 import pcd.part1.simengine_conc.message.WorkerContext;
 
-import java.util.List;
-import java.util.concurrent.CyclicBarrier;
-
-public class WorkerAgent extends AbstractBehavior<WorkerContext> {
+public class WorkerActor extends AbstractBehavior<WorkerContext> {
 	
 	private final AbstractAgent assignedSimAgents;
 	
-	public WorkerAgent(ActorContext<WorkerContext> context, AbstractAgent assignedSimAgents) {
+	public WorkerActor(ActorContext<WorkerContext> context, AbstractAgent assignedSimAgents) {
 		super(context);
 		this.assignedSimAgents = assignedSimAgents;
 	}
 
     public static Behavior<WorkerContext> create(AbstractAgent agent, int dt) {
-		return Behaviors.setup(context -> new WorkerAgent(context,agent));
+		return Behaviors.setup(context -> new WorkerActor(context,agent));
     }
 
 
