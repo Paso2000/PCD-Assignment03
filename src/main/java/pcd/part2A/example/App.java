@@ -18,6 +18,7 @@ public class App {
 
   private static class RootBehavior {
     static Behavior<Void> create() {
+
       return Behaviors.setup(context -> {
         //inserisce il nodo nel cluster
         Cluster cluster = Cluster.get(context.getSystem());
@@ -26,10 +27,12 @@ public class App {
           int workersPerNode = context.getSystem().settings().config().getInt("transformation.workers-per-node");
           for (int i = 0; i < workersPerNode; i++) {
             context.spawn(Worker.create(), "Worker" + i);
+            System.out.println("Worker" + i + " spawned");
           }
         }
         if (cluster.selfMember().hasRole("frontend")) {
           context.spawn(Frontend.create(), "Frontend");
+          System.out.println("Frontend" + " spawned");
         }
 
         return Behaviors.empty();
@@ -39,6 +42,8 @@ public class App {
 
   public static void main(String[] args) {
     if (args.length == 0) {
+      System.out.println("main started");
+
       startup("backend", 25251);
       startup("backend", 25252);
       startup("frontend", 0);
@@ -53,6 +58,7 @@ public class App {
 
   private static void startup(String role, int port) {
 
+    System.out.println(role  + ":" + port + " started");
     // Override the configuration of the port
     Map<String, Object> overrides = new HashMap<>();
     overrides.put("akka.remote.artery.canonical.port", port);
@@ -62,5 +68,6 @@ public class App {
         .withFallback(ConfigFactory.load("transformation"));
 
     ActorSystem<Void> system = ActorSystem.create(RootBehavior.create(), "ClusterSystem", config);
+
   }
 }
