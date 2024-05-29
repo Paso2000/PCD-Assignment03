@@ -39,7 +39,6 @@ public class Worker {
     return Behaviors.setup(context -> {
       context.getLog().info("Registering myself with receptionist");
       context.getSystem().receptionist().tell(Receptionist.register(WORKER_SERVICE_KEY, context.getSelf().narrow()));
-
       return Behaviors.receive(Command.class)
           .onMessage(TransformText.class, command -> {
             command.replyTo.tell(new TextTransformed(command.text.toUpperCase()));
