@@ -17,9 +17,7 @@ public class SimulationGUIFrame extends JFrame implements ActionListener {
 	private JTextField nSteps;
 
 	private ActorRef<ControllerContext> actorConttroller;
-	
-	private SimulationController controller;
-	
+
 	public SimulationGUIFrame(int initialValue, ActorRef<ControllerContext> controller){
 		this.actorConttroller =controller;
 		setTitle("Simulation Dashboard");
@@ -59,11 +57,7 @@ public class SimulationGUIFrame extends JFrame implements ActionListener {
 		start.addActionListener(this);
 		stop.addActionListener(this);
 	}
-	
-	public void setController(SimulationController contr) {
-		this.controller = contr;
-	}
-	
+
 	public void actionPerformed(ActionEvent ev){
 		Object src = ev.getSource();
 		if (src==start){	
@@ -71,8 +65,6 @@ public class SimulationGUIFrame extends JFrame implements ActionListener {
 				int nSt = Integer.parseInt(nSteps.getText());
 				start.setEnabled(false);
 				stop.setEnabled(true);
-				System.out.println("ciao");
-				//controller.notifyStarted(nSt);
 				actorConttroller.tell(new ControllerContext.InitSimulation(nSt,this));
 			} catch (Exception ex) {}
 		} else if (src == stop){
@@ -81,20 +73,9 @@ public class SimulationGUIFrame extends JFrame implements ActionListener {
 			actorConttroller.tell(new ControllerContext.StopSimulation());
 		}
 	}
-	
-	public void reset() {
-		SwingUtilities.invokeLater(()-> {
-			start.setEnabled(true);
-			stop.setEnabled(false);
-		});
-	}
-
-
 	public void display() {
         SwingUtilities.invokeLater(() -> {
         	this.setVisible(true);
         });
     }
-	
-	
 }

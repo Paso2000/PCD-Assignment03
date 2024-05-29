@@ -11,9 +11,6 @@ public abstract class MasterContext {
     public static final class StopSimulation extends MasterContext {
 
     }
-    public static final class FinishSimulation extends MasterContext {
-
-    }
 
 
 

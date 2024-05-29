@@ -67,7 +67,6 @@ public class MasterAgent extends AbstractBehavior<MasterContext> {
 		return newReceiveBuilder()
 				.onMessage(MasterContext.InitSimulation.class, this::onInit)
 				.onMessage(MasterContext.FinishStep.class, this::ExecuteStep)
-				.onMessage(MasterContext.FinishSimulation.class, this::onFinish)
 				.onMessage(MasterContext.StopSimulation.class, this::onStop)
 				.build();
 	}
@@ -104,9 +103,6 @@ public class MasterAgent extends AbstractBehavior<MasterContext> {
 		});
 	}
 
-	private Behavior<MasterContext> onFinish(MasterContext.FinishSimulation finishSimulation){return null;}
-
-
 	private Behavior<MasterContext> ExecuteStep(MasterContext.FinishStep finishStep) {
 		countFinish++;
 		if(numSteps<step){
@@ -124,6 +120,7 @@ public class MasterAgent extends AbstractBehavior<MasterContext> {
 				/* updating logic time */
 				t += dt;
 				step++;
+
 				simEnv.step(dt);
 				simEnv.cleanActions();
 				ActorRef<MasterContext> self = getContext().getSelf();

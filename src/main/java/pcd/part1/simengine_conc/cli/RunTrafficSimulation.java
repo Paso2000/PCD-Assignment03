@@ -13,7 +13,7 @@ import pcd.part1.simtraffic_conc_examples.*;
  */
 public class RunTrafficSimulation {
 
-	private static final int DEFAULT_STEPS = 10000;
+	private static final int DEFAULT_STEPS = 1000;
 
 	public static void main(String[] args) {		
 

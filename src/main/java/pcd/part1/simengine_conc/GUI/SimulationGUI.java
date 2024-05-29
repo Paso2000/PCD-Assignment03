@@ -18,16 +18,8 @@ public class SimulationGUI {
 	public SimulationGUI(int initialValue, ActorRef<ControllerContext> controller){
 		gui = new SimulationGUIFrame(initialValue, controller);
 	}
-	
-	public void setController(SimulationController contr) {
-		gui.setController(contr);
-	}
-
 	public  void display() {
 		gui.display();
     }
-	
-	public void reset() {
-		gui.reset();
-	}
+
 }

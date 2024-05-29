@@ -18,7 +18,6 @@ public class SimulationController extends AbstractBehavior<ControllerContext> {
 	private Flag stopFlag;
 	private ActorRef<MasterContext> master;
 	private AbstractSimulation simulation;
-	private SimulationGUIFrame gui;
 	private RoadSimView view;
 	private RoadSimStatistics stat;
 	 
@@ -32,24 +31,6 @@ public class SimulationController extends AbstractBehavior<ControllerContext> {
 	public static Behavior<ControllerContext> create(AbstractSimulation simulation) {
 		return Behaviors.setup(context -> new SimulationController(context,simulation));
 	}
-
-	public void notifyStarted(int nSteps) {
-		new Thread(() -> {
-
-			simulation.setup();			
-			view.display();
-			stopFlag.reset();
-			ActorRef<MasterContext> master = ActorSystem.create(MasterAgent.create(simulation,nSteps,true),"car_simulation");
-			master.tell(new MasterContext.InitSimulation());
-			gui.reset();
-			
-		}).start();
-	}
-	
-	public void notifyStopped() {
-		stopFlag.set();
-	}
-
 	@Override
 	public Receive<ControllerContext> createReceive() {
 		return newReceiveBuilder()
@@ -67,7 +48,6 @@ public class SimulationController extends AbstractBehavior<ControllerContext> {
 
 	private Behavior<ControllerContext> onInit(ControllerContext.InitSimulation initSimulation) {
 		return Behaviors.setup(context ->{
-			this.gui = initSimulation.gui;
 			view = new RoadSimView();
 			stat = new RoadSimStatistics();
 			simulation.addSimulationListener(stat);
