@@ -1,6 +1,9 @@
 package pcd.part1.simengine_conc.cli;
 
+import akka.actor.typed.ActorRef;
+import akka.actor.typed.ActorSystem;
 import pcd.part1.simengine_conc.*;
+import pcd.part1.simengine_conc.message.MasterContext;
 import pcd.part1.simtraffic_conc_examples.*;
 
 /**
@@ -16,9 +19,9 @@ public class RunTrafficSimulation {
 
 		int nWorkers = Runtime.getRuntime().availableProcessors() + 1;
 		
-		// var simulation = new TrafficSimulationSingleRoadTwoCars();
-		 var simulation = new TrafficSimulationSingleRoadSeveralCars();
-		// var simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
+		 //var simulation = new TrafficSimulationSingleRoadTwoCars();
+		 //var simulation = new TrafficSimulationSingleRoadSeveralCars();
+		 var simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
 
 		//var simulation = new TrafficSimulationWithCrossRoads();
 		simulation.configureNumWorkers(nWorkers);
@@ -32,6 +35,7 @@ public class RunTrafficSimulation {
 		simulation.addSimulationListener(view);		
 		
 		Flag stopFlag = new Flag();
-		simulation.run(DEFAULT_STEPS, stopFlag, true);
+		ActorRef<MasterContext> master = ActorSystem.create(MasterAgent.create(simulation,DEFAULT_STEPS,true),"car_simulation");
+		master.tell(new MasterContext.InitSimulation());
 	}
 }
