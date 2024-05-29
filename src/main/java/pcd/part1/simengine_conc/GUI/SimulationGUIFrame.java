@@ -1,5 +1,8 @@
 package pcd.part1.simengine_conc.GUI;
 
+import akka.actor.typed.ActorRef;
+import pcd.part1.simengine_conc.message.ControllerContext;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,10 +15,13 @@ public class SimulationGUIFrame extends JFrame implements ActionListener {
 	private JButton start;
 	private JButton stop;
 	private JTextField nSteps;
+
+	private ActorRef<ControllerContext> actorConttroller;
 	
 	private SimulationController controller;
 	
-	public SimulationGUIFrame(int initialValue){
+	public SimulationGUIFrame(int initialValue, ActorRef<ControllerContext> controller){
+		this.actorConttroller =controller;
 		setTitle("Simulation Dashboard");
 		setSize(300,100);		
 		nSteps = new JTextField(5);
@@ -65,12 +71,14 @@ public class SimulationGUIFrame extends JFrame implements ActionListener {
 				int nSt = Integer.parseInt(nSteps.getText());
 				start.setEnabled(false);
 				stop.setEnabled(true);
-				controller.notifyStarted(nSt);
+				System.out.println("ciao");
+				//controller.notifyStarted(nSt);
+				actorConttroller.tell(new ControllerContext.InitSimulation(nSt,this));
 			} catch (Exception ex) {}
 		} else if (src == stop){
 			start.setEnabled(true);
 			stop.setEnabled(false);
-			controller.notifyStopped();
+			actorConttroller.tell(new ControllerContext.StopSimulation());
 		}
 	}
 	

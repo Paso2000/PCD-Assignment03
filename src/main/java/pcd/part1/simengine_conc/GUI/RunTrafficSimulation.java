@@ -1,5 +1,10 @@
 package pcd.part1.simengine_conc.GUI;
 
+import akka.actor.typed.ActorRef;
+import akka.actor.typed.ActorSystem;
+import pcd.part1.simengine_conc.MasterAgent;
+import pcd.part1.simengine_conc.message.ControllerContext;
+import pcd.part1.simengine_conc.message.MasterContext;
 import pcd.part1.simtraffic_conc_examples.*;
 
 /**
@@ -22,11 +27,9 @@ public class RunTrafficSimulation {
 		var simulation = new TrafficSimulationWithCrossRoads();
 		
 		simulation.configureNumWorkers(nWorkers);
-        SimulationGUI gui = new SimulationGUI(DEFAULT_STEPS);
 
-		SimulationController controller = new SimulationController(simulation);
-		controller.attach(gui);
+		ActorRef<ControllerContext> controller = ActorSystem.create(SimulationController.create(simulation),"controller");
+		SimulationGUI gui = new SimulationGUI(DEFAULT_STEPS,controller);
         gui.display();
-				
 	}
 }

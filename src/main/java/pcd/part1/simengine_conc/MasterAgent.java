@@ -73,7 +73,7 @@ public class MasterAgent extends AbstractBehavior<MasterContext> {
 	}
 
 	private Behavior<MasterContext> onStop(MasterContext.StopSimulation stopSimulation) {
-		return null;
+		return Behaviors.stopped();
 	}
 
 	private Behavior<MasterContext> onInit(MasterContext.InitSimulation initSimulation) {
@@ -104,9 +104,8 @@ public class MasterAgent extends AbstractBehavior<MasterContext> {
 		});
 	}
 
-	private Behavior<MasterContext> onFinish(MasterContext.FinishSimulation finishSimulation) {
-		return null;
-	}
+	private Behavior<MasterContext> onFinish(MasterContext.FinishSimulation finishSimulation){return null;}
+
 
 	private Behavior<MasterContext> ExecuteStep(MasterContext.FinishStep finishStep) {
 		countFinish++;
