@@ -1,7 +1,0 @@
-[0m[[0m[0mdebug[0m] [0m[0m> Exec(run, Some(5368d217-019b-4385-af76-6c7220a4ca23), Some(CommandSource(console0)))[0m
-[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Compile / run[0m
-[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
-[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\target\scala-3.3.3\classes ...[0m
-[0m[[0m[32msuccess[0m] [0m[0mTotal time: 13 s, completed 27 mag 2024, 11:31:00[0m
-[0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m
-[0m[[0m[0mdebug[0m] [0m[0mForcing garbage collection...[0m

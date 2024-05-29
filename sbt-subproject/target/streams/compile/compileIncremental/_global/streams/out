@@ -1,6 +1,0 @@
-[0m[[0m[0mdebug[0m] [0m[0m[zinc] IncrementalCompile -----------[0m
-[0m[[0m[0mdebug[0m] [0m[0mIncrementalCompile.incrementalCompile[0m
-[0m[[0m[0mdebug[0m] [0m[0mprevious = Stamps for: 33 products, 8 sources, 8 libraries[0m
-[0m[[0m[0mdebug[0m] [0m[0mcurrent source = Set(${BASE}/src/main/scala/it/unibo/pcd/akka/cluster/advanced/BasicExample.scala, ${BASE}/src/main/scala/it/unibo/pcd/akka/cluster/advanced/SimpleGUI.scala, ${BASE}/src/main/scala/it/unibo/pcd/akka/Message.scala, ${BASE}/src/main/scala/it/unibo/pcd/akka/cluster/utils.scala, ${BASE}/src/main/scala/it/unibo/pcd/akka/cluster/advanced/Roles.scala, ${BASE}/src/main/scala/it/unibo/pcd/akka/cluster/advanced/AntsRender.scala, ${BASE}/src/main/scala/it/unibo/pcd/akka/cluster/advanced/SingletonExample.scala, ${BASE}/src/main/scala/it/unibo/pcd/akka/cluster/advanced/Ant.scala)[0m
-[0m[[0m[0mdebug[0m] [0m[0m> initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(), unmodified = ...),Set(),Set(),API Changes: Set())[0m
-[0m[[0m[0mdebug[0m] [0m[0mNo changes[0m

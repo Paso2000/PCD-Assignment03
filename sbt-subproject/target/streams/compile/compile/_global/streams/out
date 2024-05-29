@@ -1,9 +1,0 @@
-[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E008] Not Found Error: C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\src\main\scala\it\unibo\pcd\akka\part2A\SudokuGUI.scala:14:42 [0m[0m[0m
-[0m[[0m[31merror[0m] [0m[0m[31m14 |[0m    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)[0m
-[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m                                   ^^^^^^^^^^^^^^^^^^^^[0m[0m
-[0m[[0m[31merror[0m] [0m[0m[31m   |[0m        value EXIT_ON_CLOSE is not a member of object javax.swing.JFrame[0m
-[0m[[0m[31merror[0m] [0m[0m[31m[31m-- [E008] Not Found Error: C:\Users\giamm\Desktop\PCD-Assignment03\sbt-subproject\src\main\scala\it\unibo\pcd\akka\part2A\SudokuGUI.scala:24:45 [0m[0m[0m
-[0m[[0m[31merror[0m] [0m[0m[31m24 |[0m      cell.setHorizontalAlignment(JTextField.CENTER)[0m
-[0m[[0m[31merror[0m] [0m[0m[31m[31m   |[0m                                  ^^^^^^^^^^^^^^^^^[0m[0m
-[0m[[0m[31merror[0m] [0m[0m[31m   |[0m           value CENTER is not a member of object javax.swing.JTextField[0m
-[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
