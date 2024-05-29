@@ -34,7 +34,6 @@ public class App {
           context.spawn(Frontend.create(), "Frontend");
           System.out.println("Frontend" + " spawned");
         }
-
         return Behaviors.empty();
       });
     }
