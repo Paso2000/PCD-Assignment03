@@ -33,10 +33,6 @@ public class SimulationController extends AbstractBehavior<ControllerContext> {
 		return Behaviors.setup(context -> new SimulationController(context,simulation));
 	}
 
-	public void attach(SimulationGUI gui) {
-
-	}
-
 	public void notifyStarted(int nSteps) {
 		new Thread(() -> {
 
@@ -76,13 +72,11 @@ public class SimulationController extends AbstractBehavior<ControllerContext> {
 			stat = new RoadSimStatistics();
 			simulation.addSimulationListener(stat);
 			simulation.addSimulationListener(view);
-			gui.setController(this);
 			simulation.setup();
 			view.display();
 			stopFlag.reset();
-			 master = context.spawn(MasterAgent.create(simulation,initSimulation.nStep,true),"car_simulation");
+			master = context.spawn(MasterAgent.create(simulation,initSimulation.nStep,true),"car_simulation");
 			master.tell(new MasterContext.InitSimulation());
-			gui.reset();
 			return Behaviors.same();
 		});
 	}

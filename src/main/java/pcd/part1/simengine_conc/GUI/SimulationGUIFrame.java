@@ -71,6 +71,7 @@ public class SimulationGUIFrame extends JFrame implements ActionListener {
 				int nSt = Integer.parseInt(nSteps.getText());
 				start.setEnabled(false);
 				stop.setEnabled(true);
+				System.out.println("ciao");
 				//controller.notifyStarted(nSt);
 				actorConttroller.tell(new ControllerContext.InitSimulation(nSt,this));
 			} catch (Exception ex) {}
