@@ -6,6 +6,7 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.cluster.typed.Cluster;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import pcd.part2A.GUI.View;
 import pcd.part2A.example.Frontend;
 import pcd.part2A.example.Worker;
 
@@ -21,10 +22,10 @@ public class App{
                 Cluster cluster = Cluster.get(context.getSystem());
 
                 if (cluster.selfMember().hasRole("backend")) {
-                    //context.spawn(Worker.create(), "Worker" + i);
+                    context.spawn(GridActor.create(), "Backend");
                     }
                 if (cluster.selfMember().hasRole("frontend")) {
-                    //context.spawn(Frontend.create(), "Frontend");
+                    context.spawn(PlayerActor.create(), "Frontend");
                 }
                 return Behaviors.empty();
             });
@@ -32,19 +33,13 @@ public class App{
     }
 
     public static void main(String[] args) {
-        if (args.length == 0) {
-            System.out.println("main started");
-
-            startup("backend", 25251);
-            startup("backend", 25252);
-            startup("frontend", 0);
-            startup("frontend", 0);
-            startup("frontend", 0);
-        } else {
-            if (args.length != 2)
-                throw new IllegalArgumentException("Usage: role port");
-            startup(args[0], Integer.parseInt(args[1]));
-        }
+        View frame = new View();
+        frame.setVisible(true);
+          //  startup("backend", 25251);
+           // startup("backend", 25252);
+           // startup("frontend", 0);
+           // startup("frontend", 0);
+            startup("frontend", 25251);
     }
     public static void startup(String role, int port) {
 

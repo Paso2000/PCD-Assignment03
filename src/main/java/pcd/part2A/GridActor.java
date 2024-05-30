@@ -5,12 +5,17 @@ import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
+import akka.actor.typed.receptionist.Receptionist;
+import akka.actor.typed.receptionist.ServiceKey;
 import pcd.part1.simengine_conc.message.MasterContext;
 import pcd.part2A.messages.GridActorContext;
 
 public class GridActor extends AbstractBehavior<GridActorContext> {
+    public static final ServiceKey<GridActorContext> SERVICE_KEY = ServiceKey.create(GridActorContext.class, "ServiceKey");
     public GridActor(ActorContext<GridActorContext> context) {
         super(context);
+        context.getSystem().receptionist().tell(Receptionist.register(SERVICE_KEY, context.getSelf()));
+        System.out.println("backend started");
     }
 
     public static Behavior<GridActorContext> create() {

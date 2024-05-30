@@ -11,6 +11,7 @@ import pcd.part2A.messages.PlayerActorContext;
 public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     public PlayerActor(ActorContext<PlayerActorContext> context) {
         super(context);
+        System.out.println("Frontend started");
     }
 
     public static Behavior<PlayerActorContext> create() {
