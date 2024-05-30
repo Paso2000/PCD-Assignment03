@@ -3,13 +3,19 @@ package pcd.part2A;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
+import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import pcd.part2A.messages.CoordinatorActorContext;
+import pcd.part2A.messages.GridActorContext;
 import pcd.part2A.messages.PlayerActorContext;
 
 public class CoordinatorActor extends AbstractBehavior<CoordinatorActorContext> {
     public CoordinatorActor(ActorContext<CoordinatorActorContext> context) {
         super(context);
+    }
+
+    public static Behavior<CoordinatorActorContext> create() {
+        return Behaviors.setup(CoordinatorActor::new);
     }
 
     @Override

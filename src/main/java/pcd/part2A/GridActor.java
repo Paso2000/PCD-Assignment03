@@ -3,6 +3,7 @@ package pcd.part2A;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
+import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import pcd.part1.simengine_conc.message.MasterContext;
 import pcd.part2A.messages.GridActorContext;
@@ -10,6 +11,10 @@ import pcd.part2A.messages.GridActorContext;
 public class GridActor extends AbstractBehavior<GridActorContext> {
     public GridActor(ActorContext<GridActorContext> context) {
         super(context);
+    }
+
+    public static Behavior<GridActorContext> create() {
+        return Behaviors.setup(GridActor::new);
     }
 
     @Override
