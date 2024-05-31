@@ -6,9 +6,7 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.cluster.typed.Cluster;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import pcd.part2A.GUI.View;
-import pcd.part2A.example.Frontend;
-import pcd.part2A.example.Worker;
+import pcd.part2A.GUI.StartGUI;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,13 +31,13 @@ public class App{
     }
 
     public static void main(String[] args) {
-        View frame = new View();
+        StartGUI frame = new StartGUI();
         frame.setVisible(true);
-          //  startup("backend", 25251);
-           // startup("backend", 25252);
-           // startup("frontend", 0);
-           // startup("frontend", 0);
-            startup("frontend", 25251);
+        //  startup("backend", 25251);
+        // startup("backend", 25252);
+        // startup("frontend", 0);
+        // startup("frontend", 0);
+        startup("frontend", 0);
     }
     public static void startup(String role, int port) {
 

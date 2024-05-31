@@ -1,13 +1,5 @@
 package pcd.part2A;
 
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import pcd.part2A.GUI.SudokuGUI;
-import pcd.part2A.GUI.View;
-import pcd.part2A.messages.PlayerActorContext;
-import pcd.part2A.sudoku.SudokuGrid;
-import pcd.part2A.sudoku.SudokuSolver;
-
 import java.awt.*;
 
 public class Runner {
