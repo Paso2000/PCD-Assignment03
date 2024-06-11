@@ -44,7 +44,7 @@ public class StartGUI extends JFrame {
             if (command.equals("New Game")) {
                 SudokuGUI ex = new SudokuGUI();
                 ex.setVisible(true);
-                startup("backend", (25251));
+                startup("backend", (0));
             } else if (command.equals("Enter in a game")) {
                 System.out.println("Enter in a game");
             }
