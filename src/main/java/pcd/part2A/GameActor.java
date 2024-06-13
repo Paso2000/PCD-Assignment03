@@ -7,7 +7,6 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import akka.actor.typed.receptionist.Receptionist;
 import akka.actor.typed.receptionist.ServiceKey;
-import pcd.part2A.GUI.GuiActor;
 import pcd.part2A.messages.GuiActorContext;
 
 public class GameActor extends AbstractBehavior<GuiActorContext> {
@@ -28,32 +27,12 @@ public class GameActor extends AbstractBehavior<GuiActorContext> {
     @Override
     public Receive<GuiActorContext> createReceive() {
         return newReceiveBuilder()
-                .onMessage(GuiActorContext.UpdateCell.class, this::onUpdateCell)
+             //   .onMessage(GuiActorContext.UpdateCell.class, this::onUpdateCell)
              //   .onMessage(GuiActorContext.SelectCell.class, this::onSelectCell)
               //  .onMessage(GuiActorContext.PlayerLefted.class, this::onPlayerLeft)
-                .onMessage(GuiActorContext.UpdateCell.class, this::onPlayerJoin)
+              //  .onMessage(GuiActorContext.UpdateCell.class, this::onPlayerJoin)
                 .build();
     }
 
-    private Behavior<GuiActorContext> onPlayerJoin(GuiActorContext.UpdateCell playerJoined) {
-        //notify all player che un altro player è entrato
-        return null;
-    }
-
-    private Behavior<GuiActorContext> onPlayerLeft(GuiActorContext.PlayerLefted playerLefted) {
-        //notify all player che un altro player è uscito
-        return null;
-    }
-
-    private Behavior<GuiActorContext> onSelectCell(GuiActorContext.SelectCell selectCell) {
-        //fa la select a tutti i player della cella
-        return null;
-    }
-
-    private Behavior<GuiActorContext> onUpdateCell(GuiActorContext.UpdateCell updateCell) {
-
-
-    });
-    }
 
 }

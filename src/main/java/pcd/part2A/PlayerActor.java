@@ -36,7 +36,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     private Behavior<PlayerActorContext> onCellUpdated(PlayerActorContext.CellUpdated cellUpdated) {
         return Behaviors.setup(context -> {
             grid[cellUpdated.coordinate.first()][cellUpdated.coordinate.second()] = cellUpdated.value;
-
+            System.out.println(cellUpdated.value);
             return Behaviors.same();
         });
     }
