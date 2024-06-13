@@ -1,24 +1,36 @@
 package pcd.part2A.GUI;
 
+import akka.actor.ActorRef;
+import akka.actor.typed.Behavior;
+import akka.actor.typed.javadsl.ActorContext;
+import akka.actor.typed.javadsl.Behaviors;
+import pcd.part2A.PlayerActor;
+import pcd.part2A.messages.GuiActorContext;
+import pcd.part2A.messages.PlayerActorContext;
 import pcd.part2A.sudoku.SudokuGrid;
 import pcd.part2A.sudoku.SudokuSolver;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SudokuGUI extends JFrame {
+public class GuiActor extends JFrame {
     private static final int GRID_SIZE = SudokuGrid.SIZE;
     private JTextField[][] cells;
     private SudokuGrid grid;
     private SudokuSolver solver;
 
-    public SudokuGUI() {
+    ActorContext<PlayerActorContext> player;
+
+    public GuiActor(ActorContext player) {
         grid = new SudokuGrid();
         solver = new SudokuSolver();
         cells = new JTextField[GRID_SIZE][GRID_SIZE];
         initUI();
+        this.player=player;
     }
 
     private void initUI() {
@@ -35,9 +47,24 @@ public class SudokuGUI extends JFrame {
                 cells[row][col].setHorizontalAlignment(JTextField.CENTER);
                 cells[row][col].setFont(font);
                 panel.add(cells[row][col]);
+                cells[row][col].getDocument().addDocumentListener(new DocumentListener() {
+                    @Override
+                    public void insertUpdate(DocumentEvent e) {
+                        //madno mess
+                    }
+
+                    @Override
+                    public void removeUpdate(DocumentEvent e) {
+
+                    }
+
+                    @Override
+                    public void changedUpdate(DocumentEvent e) {
+                        //mando il messaggio agli altri
+                    }
+                });
             }
         }
-
         JButton solveButton = new JButton("Solve");
         solveButton.addActionListener(new ActionListener() {
             @Override
@@ -61,6 +88,16 @@ public class SudokuGUI extends JFrame {
         add(panel, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
     }
+
+    private Behavior<GuiActorContext.UpdateCell> behavior() {
+        return Behaviors.receive(GuiActorContext.UpdateCell.class).onMessage(GuiActorContext.UpdateCell.class, this::onChangeGrid).build();
+    }
+
+    private Behavior<GuiActorContext.UpdateCell> onChangeGrid(GuiActorContext.UpdateCell updateCell) {
+       player.getSelf().tell(new PlayerActorContext.CellUpdated(updateCell.coordinate, updateCell.value));
+       return Behaviors.same();
+    }
+
 
     private void solveSudoku() {
         for (int row = 0; row < GRID_SIZE; row++) {

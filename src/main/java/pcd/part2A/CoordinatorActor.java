@@ -6,8 +6,6 @@ import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import pcd.part2A.messages.CoordinatorActorContext;
-import pcd.part2A.messages.GridActorContext;
-import pcd.part2A.messages.PlayerActorContext;
 
 public class CoordinatorActor extends AbstractBehavior<CoordinatorActorContext> {
     public CoordinatorActor(ActorContext<CoordinatorActorContext> context) {

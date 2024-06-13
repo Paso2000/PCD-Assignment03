@@ -1,10 +1,20 @@
 package pcd.part2A.GUI;
+import akka.actor.typed.ActorSystem;
+import akka.actor.typed.Behavior;
+import akka.actor.typed.javadsl.Behaviors;
+import akka.cluster.typed.Cluster;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import pcd.part2A.GameActor;
+import pcd.part2A.PlayerActor;
+
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import static pcd.part2A.App.startup;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StartGUI extends JFrame {
     private JButton newGameButton;
@@ -42,12 +52,45 @@ public class StartGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             String command = e.getActionCommand();
             if (command.equals("New Game")) {
-                SudokuGUI ex = new SudokuGUI();
-                ex.setVisible(true);
+                startup("frontend", 0);
                 startup("backend", (0));
             } else if (command.equals("Enter in a game")) {
                 System.out.println("Enter in a game");
             }
         }
+    }
+
+    private static class RootBehavior {
+        static Behavior<Void> create() {
+
+            return Behaviors.setup(context -> {
+                //inserisce il nodo nel cluster
+                Cluster cluster = Cluster.get(context.getSystem());
+
+                if (cluster.selfMember().hasRole("backend")) {
+                    context.spawn(GameActor.create(), "Backend");
+                }
+                if (cluster.selfMember().hasRole("frontend")) {
+                    context.spawn(PlayerActor.create(), "Frontend");
+                    GuiActor ex = new GuiActor(context);
+                    ex.setVisible(true);
+                }
+                return Behaviors.empty();
+            });
+        }
+    }
+    public static void startup(String role, int port) {
+
+        //System.out.println(role  + ":" + port + " started");
+        // Override the configuration of the port
+        Map<String, Object> overrides = new HashMap<>();
+        overrides.put("akka.remote.artery.canonical.port", port);
+        overrides.put("akka.cluster.roles", Collections.singletonList(role));
+
+        Config config = ConfigFactory.parseMap(overrides)
+                .withFallback(ConfigFactory.load("transformation"));
+
+        ActorSystem<Void> system = ActorSystem.create(RootBehavior.create(), "ClusterSystem", config);
+
     }
 }
