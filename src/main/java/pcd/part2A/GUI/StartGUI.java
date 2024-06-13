@@ -72,8 +72,8 @@ public class StartGUI extends JFrame {
                 }
                 if (cluster.selfMember().hasRole("frontend")) {
                     context.spawn(PlayerActor.create(), "Frontend");
-                    GuiActor ex = new GuiActor(context);
-                    ex.setVisible(true);
+                    GuiActor.create(context);
+
                 }
                 return Behaviors.empty();
             });

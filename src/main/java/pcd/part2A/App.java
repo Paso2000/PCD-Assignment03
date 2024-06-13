@@ -16,10 +16,6 @@ public class App{
     public static void main(String[] args) {
         StartGUI frame = new StartGUI();
         frame.setVisible(true);
-        //  startup("backend", 25251);
-        // startup("backend", 25252);
-        // startup("frontend", 0);
-        // startup("frontend", 0);
     }
 
 }

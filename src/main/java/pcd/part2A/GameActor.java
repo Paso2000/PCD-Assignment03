@@ -7,6 +7,7 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import akka.actor.typed.receptionist.Receptionist;
 import akka.actor.typed.receptionist.ServiceKey;
+import pcd.part2A.GUI.GuiActor;
 import pcd.part2A.messages.GuiActorContext;
 
 public class GameActor extends AbstractBehavior<GuiActorContext> {
@@ -28,8 +29,8 @@ public class GameActor extends AbstractBehavior<GuiActorContext> {
     public Receive<GuiActorContext> createReceive() {
         return newReceiveBuilder()
                 .onMessage(GuiActorContext.UpdateCell.class, this::onUpdateCell)
-                .onMessage(GuiActorContext.SelectCell.class, this::onSelectCell)
-                .onMessage(GuiActorContext.PlayerLefted.class, this::onPlayerLeft)
+             //   .onMessage(GuiActorContext.SelectCell.class, this::onSelectCell)
+              //  .onMessage(GuiActorContext.PlayerLefted.class, this::onPlayerLeft)
                 .onMessage(GuiActorContext.UpdateCell.class, this::onPlayerJoin)
                 .build();
     }
@@ -51,10 +52,7 @@ public class GameActor extends AbstractBehavior<GuiActorContext> {
 
     private Behavior<GuiActorContext> onUpdateCell(GuiActorContext.UpdateCell updateCell) {
 
-    return Behaviors.setup(context -> {
-        sudokuGrid[updateCell.coord.first()][updateCell.coord.second()] = updateCell.value;
-        updateCell.replyTo.tell();
-        return Behaviors.same();
+
     });
     }
 

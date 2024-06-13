@@ -26,6 +26,7 @@ public class GuiActor extends JFrame {
     ActorContext<PlayerActorContext> player;
 
     public GuiActor(ActorContext player) {
+        this.setVisible(true);
         grid = new SudokuGrid();
         solver = new SudokuSolver();
         cells = new JTextField[GRID_SIZE][GRID_SIZE];
@@ -87,6 +88,13 @@ public class GuiActor extends JFrame {
 
         add(panel, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
+    }
+
+    public static Behavior<GuiActorContext.UpdateCell> create(ActorContext player) {
+        return Behaviors.setup(
+                ctx -> {
+                    return new GuiActor(player).behavior();
+                });
     }
 
     private Behavior<GuiActorContext.UpdateCell> behavior() {
