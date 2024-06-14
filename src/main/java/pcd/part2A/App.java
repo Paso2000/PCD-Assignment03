@@ -17,5 +17,4 @@ public class App{
         StartGUI frame = new StartGUI();
         frame.setVisible(true);
     }
-
 }

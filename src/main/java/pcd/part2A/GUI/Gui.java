@@ -1,10 +1,7 @@
 package pcd.part2A.GUI;
 
-import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.ActorContext;
-import akka.actor.typed.javadsl.Behaviors;
 import akka.japi.Pair;
-import pcd.part2A.messages.GuiActorContext;
 import pcd.part2A.messages.PlayerActorContext;
 import pcd.part2A.sudoku.SudokuGrid;
 import pcd.part2A.sudoku.SudokuSolver;
@@ -18,18 +15,18 @@ import java.awt.event.ActionListener;
 
 public class Gui extends JFrame {
     private static final int GRID_SIZE = SudokuGrid.SIZE;
+    private final ActorContext player;
     private JTextField[][] cells;
     private SudokuGrid grid;
     private SudokuSolver solver;
 
-    Behavior<GuiActorContext> guiActor;
 
     public Gui(ActorContext player) {
         grid = new SudokuGrid();
         solver = new SudokuSolver();
         cells = new JTextField[GRID_SIZE][GRID_SIZE];
         initUI();
-        guiActor= GuiActor.create(player);
+        this.player=player;
     }
 
     private void initUI() {
@@ -54,7 +51,8 @@ public class Gui extends JFrame {
                         for (int r = 0; r < finalRow; r++) {
                             for (int c = 0; c < finalCol; c++) {
                                 if (cells[r][c].getDocument() == e.getDocument()) {
-                                    guiActor.tell(new GuiActorContext.UpdateCell(Integer.parseInt(cells[r][c].getText()),new Pair<>(r,c)));
+                                    System.out.println("ciaooooooooooooo");
+                                    player.getSelf().tell(new PlayerActorContext.CellUpdated(new Pair<>(r,c),Integer.parseInt(cells[r][c].getText())));
                                     return;
                                 }
                             }
@@ -68,7 +66,15 @@ public class Gui extends JFrame {
 
                     @Override
                     public void changedUpdate(DocumentEvent e) {
-                        //mando il messaggio agli altri
+                        for (int r = 0; r < finalRow; r++) {
+                            for (int c = 0; c < finalCol; c++) {
+                                if (cells[r][c].getDocument() == e.getDocument()) {
+                                    System.out.println("ciaooooooooooooo");
+                                    player.getSelf().tell(new PlayerActorContext.CellUpdated(new Pair<>(r,c),Integer.parseInt(cells[r][c].getText())));
+                                    return;
+                                }
+                            }
+                        }
                     }
                 });
             }
