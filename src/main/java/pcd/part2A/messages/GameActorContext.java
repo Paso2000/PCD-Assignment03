@@ -1,15 +1,14 @@
 package pcd.part2A.messages;
 
 import akka.japi.Pair;
-import jnr.ffi.annotations.In;
 
 /**
  * Context about GridActor actor,
  * with list of message that receive
  */
-public abstract class GuiActorContext {
+public abstract class GameActorContext {
 
-    public static final class UpdateCell extends GuiActorContext {
+    public static final class UpdateCell extends GameActorContext {
         public int value;
         public Pair<Integer,Integer> coordinate;
 

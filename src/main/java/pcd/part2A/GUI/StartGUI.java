@@ -5,7 +5,7 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.cluster.typed.Cluster;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import pcd.part2A.GameActor;
+import pcd.part2A.GamesActor;
 import pcd.part2A.PlayerActor;
 
 import javax.swing.*;
@@ -68,11 +68,11 @@ public class StartGUI extends JFrame {
                 Cluster cluster = Cluster.get(context.getSystem());
 
                 if (cluster.selfMember().hasRole("backend")) {
-                    context.spawn(GameActor.create(), "Backend");
+                    context.spawn(GamesActor.create(), "Backend");
                 }
                 if (cluster.selfMember().hasRole("frontend")) {
                     context.spawn(PlayerActor.create(), "Frontend");
-                    GuiActor.create(context);
+
 
                 }
                 return Behaviors.empty();

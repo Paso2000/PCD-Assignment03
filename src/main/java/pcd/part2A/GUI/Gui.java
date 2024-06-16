@@ -1,11 +1,7 @@
 package pcd.part2A.GUI;
 
-import akka.actor.ActorRef;
-import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.ActorContext;
-import akka.actor.typed.javadsl.Behaviors;
-import pcd.part2A.PlayerActor;
-import pcd.part2A.messages.GuiActorContext;
+import akka.japi.Pair;
 import pcd.part2A.messages.PlayerActorContext;
 import pcd.part2A.sudoku.SudokuGrid;
 import pcd.part2A.sudoku.SudokuSolver;
@@ -17,16 +13,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GuiActor extends JFrame {
+public class Gui extends JFrame {
     private static final int GRID_SIZE = SudokuGrid.SIZE;
+    private final ActorContext player;
     private JTextField[][] cells;
     private SudokuGrid grid;
     private SudokuSolver solver;
 
-    ActorContext<PlayerActorContext> player;
 
-    public GuiActor(ActorContext player) {
-        this.setVisible(true);
+    public Gui(ActorContext player) {
         grid = new SudokuGrid();
         solver = new SudokuSolver();
         cells = new JTextField[GRID_SIZE][GRID_SIZE];
@@ -48,10 +43,20 @@ public class GuiActor extends JFrame {
                 cells[row][col].setHorizontalAlignment(JTextField.CENTER);
                 cells[row][col].setFont(font);
                 panel.add(cells[row][col]);
+                int finalRow = row;
+                int finalCol = col;
                 cells[row][col].getDocument().addDocumentListener(new DocumentListener() {
                     @Override
                     public void insertUpdate(DocumentEvent e) {
-                        //madno mess
+                        for (int r = 0; r < finalRow; r++) {
+                            for (int c = 0; c < finalCol; c++) {
+                                if (cells[r][c].getDocument() == e.getDocument()) {
+                                    System.out.println("ciaooooooooooooo");
+                                    player.getSelf().tell(new PlayerActorContext.CellUpdated(new Pair<>(r,c),Integer.parseInt(cells[r][c].getText())));
+                                    return;
+                                }
+                            }
+                        }
                     }
 
                     @Override
@@ -61,7 +66,15 @@ public class GuiActor extends JFrame {
 
                     @Override
                     public void changedUpdate(DocumentEvent e) {
-                        //mando il messaggio agli altri
+                        for (int r = 0; r < finalRow; r++) {
+                            for (int c = 0; c < finalCol; c++) {
+                                if (cells[r][c].getDocument() == e.getDocument()) {
+                                    System.out.println("ciaooooooooooooo");
+                                    player.getSelf().tell(new PlayerActorContext.CellUpdated(new Pair<>(r,c),Integer.parseInt(cells[r][c].getText())));
+                                    return;
+                                }
+                            }
+                        }
                     }
                 });
             }
@@ -89,23 +102,6 @@ public class GuiActor extends JFrame {
         add(panel, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
     }
-
-    public static Behavior<GuiActorContext.UpdateCell> create(ActorContext player) {
-        return Behaviors.setup(
-                ctx -> {
-                    return new GuiActor(player).behavior();
-                });
-    }
-
-    private Behavior<GuiActorContext.UpdateCell> behavior() {
-        return Behaviors.receive(GuiActorContext.UpdateCell.class).onMessage(GuiActorContext.UpdateCell.class, this::onChangeGrid).build();
-    }
-
-    private Behavior<GuiActorContext.UpdateCell> onChangeGrid(GuiActorContext.UpdateCell updateCell) {
-       player.getSelf().tell(new PlayerActorContext.CellUpdated(updateCell.coordinate, updateCell.value));
-       return Behaviors.same();
-    }
-
 
     private void solveSudoku() {
         for (int row = 0; row < GRID_SIZE; row++) {
