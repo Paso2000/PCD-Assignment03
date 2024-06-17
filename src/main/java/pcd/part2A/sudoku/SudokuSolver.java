@@ -1,12 +1,14 @@
 package pcd.part2A.sudoku;
 
+import pcd.part2A.Actors.GridActor;
+
 public class SudokuSolver {
-    public boolean isValidMove(SudokuGrid grid, int row, int col, int value) {
+    public boolean isValidMove(GridActor grid, int row, int col, int value) {
         return !isInRow(grid, row, value) && !isInColumn(grid, col, value) && !isInBox(grid, row, col, value);
     }
 
-    private boolean isInRow(SudokuGrid grid, int row, int value) {
-        for (int col = 0; col < SudokuGrid.SIZE; col++) {
+    private boolean isInRow(GridActor grid, int row, int value) {
+        for (int col = 0; col < GridActor.SIZE; col++) {
             if (grid.getCell(row, col).getValue() == value) {
                 return true;
             }
@@ -14,8 +16,8 @@ public class SudokuSolver {
         return false;
     }
 
-    private boolean isInColumn(SudokuGrid grid, int col, int value) {
-        for (int row = 0; row < SudokuGrid.SIZE; row++) {
+    private boolean isInColumn(GridActor grid, int col, int value) {
+        for (int row = 0; row < GridActor.SIZE; row++) {
             if (grid.getCell(row, col).getValue() == value) {
                 return true;
             }
@@ -23,7 +25,7 @@ public class SudokuSolver {
         return false;
     }
 
-    private boolean isInBox(SudokuGrid grid, int row, int col, int value) {
+    private boolean isInBox(GridActor grid, int row, int col, int value) {
         int boxRowStart = (row / 3) * 3;
         int boxColStart = (col / 3) * 3;
         for (int i = 0; i < 3; i++) {
@@ -36,11 +38,11 @@ public class SudokuSolver {
         return false;
     }
 
-    public boolean solve(SudokuGrid grid) {
-        for (int row = 0; row < SudokuGrid.SIZE; row++) {
-            for (int col = 0; col < SudokuGrid.SIZE; col++) {
+    public boolean solve(GridActor grid) {
+        for (int row = 0; row < GridActor.SIZE; row++) {
+            for (int col = 0; col < GridActor.SIZE; col++) {
                 if (grid.getCell(row, col).getValue() == 0) { // trova una cella vuota
-                    for (int value = 1; value <= SudokuGrid.SIZE; value++) {
+                    for (int value = 1; value <= GridActor.SIZE; value++) {
                         if (isValidMove(grid, row, col, value)) {
                             grid.getCell(row, col).setValue(value);
                             if (solve(grid)) {

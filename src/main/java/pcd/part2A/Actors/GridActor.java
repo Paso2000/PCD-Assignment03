@@ -1,10 +1,17 @@
-package pcd.part2A.sudoku;
+package pcd.part2A.Actors;
 
-public class SudokuGrid {
+import akka.actor.typed.javadsl.AbstractBehavior;
+import akka.actor.typed.javadsl.Receive;
+import pcd.part2A.messages.GamesActorContext;
+import pcd.part2A.messages.GridActorContext;
+import pcd.part2A.sudoku.Cell;
+
+public class GridActor extends AbstractBehavior<GridActorContext> {
     private Cell[][] grid;
     public static final int SIZE = 9;
 
-    public SudokuGrid() {
+    public GridActor() {
+        super();
         grid = new Cell[SIZE][SIZE];
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
@@ -43,6 +50,11 @@ public class SudokuGrid {
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    @Override
+    public Receive<GridActorContext> createReceive() {
+        return null;
     }
 }
 
