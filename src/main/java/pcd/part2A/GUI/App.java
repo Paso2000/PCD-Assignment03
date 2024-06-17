@@ -47,6 +47,7 @@ public class App extends JFrame {
         add(panel, BorderLayout.CENTER);
     }
     public static void main(String[] args) {
+        //creo un nuovo gamesActor
         App frame = new App();
         frame.setVisible(true);
     }
@@ -64,7 +65,6 @@ public class App extends JFrame {
         ActorSystem<Void> system = ActorSystem.create(RootBehavior.create(), "ClusterSystem", config);
 
     }
-
     private static class ButtonClickListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -72,12 +72,15 @@ public class App extends JFrame {
             if (command.equals("New Game")) {
                 startup("frontend", 0);
                 startup("backend", (0));
+                //creo new PlayActor (leader)
+                //creo new GridActor
+                //mando un messaggio a GamesActor per dirgli start partita e il leader
+
             } else if (command.equals("Enter in a game")) {
                 System.out.println("Enter in a game");
             }
         }
     }
-
     private static class RootBehavior {
         static Behavior<Void> create() {
 
