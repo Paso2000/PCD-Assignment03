@@ -21,7 +21,7 @@ o un array sempre bidimensionale di Cell (nuovo oggetto che contiene un intero c
 - id del player - per rappresentare l'eventuale player che ha selezionato la cella)
 
 ## Funzionamento Sudoku
-0. Il main viene lanciato
+0. Il main viene lanciato 
    - crea un nuovo GamesActor
 1. Parte la GUI iniziale lanciata dal Main
 2. Un giocatore crea una nuova partita

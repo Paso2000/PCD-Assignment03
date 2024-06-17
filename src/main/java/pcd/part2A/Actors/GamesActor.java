@@ -25,12 +25,12 @@ public class GamesActor extends AbstractBehavior<GamesActorContext> {
     @Override
     public Receive<GamesActorContext> createReceive() {
         return newReceiveBuilder()
-             //   .onMessage(GuiActorContext.UpdateCell.class, this::onUpdateCell)
-             //   .onMessage(GuiActorContext.SelectCell.class, this::onSelectCell)
-              //  .onMessage(GuiActorContext.PlayerLefted.class, this::onPlayerLeft)
-              //  .onMessage(GuiActorContext.UpdateCell.class, this::onPlayerJoin)
-             .build();
+                .onMessage(GamesActorContext.startNewSudoku.class, this::onStartNewGame)
+                .build();
     }
 
-
+    private Behavior<GamesActorContext> onStartNewGame(GamesActorContext.startNewSudoku startNewSudoku) {
+        return null;
+    }
+    
 }
