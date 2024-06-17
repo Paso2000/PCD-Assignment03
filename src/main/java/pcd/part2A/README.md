@@ -29,7 +29,7 @@ o un array sempre bidimensionale di Cell (nuovo oggetto che contiene un intero c
    - crea un nuovo GridActor contenente un istanza del PlayerActor
    - mando un messaggio a GamesActor per comunicargli l'inizio della nuova partita e il relativo PlayerActor che l'ha creata
 3. Un giocatore entra in una partita
-   - crea un nuovo PlayerActor
+   - crea un nuovo PlayerActor e rispettivo GuiActor
    - il nuovo PlayerActor manda un messaggio al GamesActor per avvisare di essere entrato 
    (nella griglia che stabilita dal GamesActor stesso)
    - il GamesActor manda un messaggio al PlayerActor leader che
