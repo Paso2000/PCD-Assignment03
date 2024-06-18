@@ -1,7 +1,7 @@
 package pcd.part2A.GUI;
 
 import akka.actor.typed.ActorRef;
-import pcd.part2A.messages.GridActorContext;
+import pcd.part2A.messages.PlayerActorContext;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,10 +11,10 @@ import java.awt.event.ActionListener;
 public class GUIGrid extends JFrame {
     private static final int GRID_SIZE = 9;
     private JTextField[][] cells;
-    private ActorRef<GridActorContext> gridActorRef;
+    private ActorRef<PlayerActorContext> player;
 
-    public GUIGrid(ActorRef<GridActorContext> gridActorRef) {
-        this.gridActorRef = gridActorRef;
+    public GUIGrid(ActorRef<PlayerActorContext> player) {
+        this.player = player;
         cells = new JTextField[GRID_SIZE][GRID_SIZE];
         initUI();
     }
@@ -44,17 +44,26 @@ public class GUIGrid extends JFrame {
             }
         });
 
-        JButton clearButton = new JButton("Clear");
-        clearButton.addActionListener(new ActionListener() {
+        JButton selectButton = new JButton("Select");
+        selectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                clearGrid();
+                selectCell();
+            }
+        });
+
+        JButton changeButton = new JButton("Change");
+        changeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                changeCell();
             }
         });
 
         JPanel controlPanel = new JPanel();
         controlPanel.add(solveButton);
-        controlPanel.add(clearButton);
+        controlPanel.add(selectButton);
+        controlPanel.add(changeButton);
 
         add(panel, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
@@ -63,12 +72,19 @@ public class GUIGrid extends JFrame {
     private void solveSudoku() {
         // TODO
         //test messages
-        gridActorRef.tell(new GridActorContext.genericMessage());
+        player.tell(new PlayerActorContext.SolveSudoku());
         System.out.println("solve sudoku");
     }
-    private void clearGrid(){
-        // TODO
-        System.out.println("clear grid");
+
+    private void selectCell(){
+        //TODO
+        player.tell(new PlayerActorContext.SelectCell());
+        System.out.println("select cell");
+    }
+    private void changeCell(){
+        //TODO
+        player.tell(new PlayerActorContext.ChangeCell());
+        System.out.println("change value cell");
     }
 
 }

@@ -26,7 +26,7 @@ public class App extends JFrame {
 
     public App() {
         setTitle("Cooperative Sudoku");
-        setSize(600, 600);
+        setSize(400, 150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel panel = new JPanel();
 

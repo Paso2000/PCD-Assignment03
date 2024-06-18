@@ -7,7 +7,6 @@ import akka.cluster.Cluster;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import pcd.part2A.Actors.GamesActor;
-import pcd.part2A.Actors.GridActor;
 import pcd.part2A.Actors.PlayerActor;
 
 import java.util.Collections;
@@ -19,7 +18,6 @@ public class Utils {
         Map<String, Object> overrides = new HashMap<>();
         overrides.put("akka.remote.artery.canonical.port", port);
         overrides.put("akka.cluster.roles", Collections.singletonList(role));
-
         Config config = ConfigFactory.parseMap(overrides)
                 .withFallback(ConfigFactory.load("transformation"));
 

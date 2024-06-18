@@ -9,7 +9,6 @@ da postino per tutti gli altri nodi Player della stessa partita del quale ogni P
 - Games (gestore delle partite)
   - Map<Integer, ActorRef>: mappa Partita -> Player Leader
   - Map<ActorRef, List<ActorRef>>: mappa il leader a tutti i componenti della partita)
-- Grid (FE del PlayerActor, contiene una griglia con tutti i numeri inseriti dai vari giocatori)
 
 ### Altri oggetti (non-attori):
 - App GUI iniziale di scelta tra nuova partita e unisciti a una partita)
