@@ -7,6 +7,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class GUIGrid extends JFrame {
     private static final int GRID_SIZE = 9;
@@ -32,6 +36,8 @@ public class GUIGrid extends JFrame {
                 cells[row][col] = new JTextField();
                 cells[row][col].setHorizontalAlignment(JTextField.CENTER);
                 cells[row][col].setFont(font);
+                cells[row][col].getDocument().addDocumentListener(new CellDocumentListener(row, col));
+                cells[row][col].addFocusListener(new CellFocusListener(row, col));
                 panel.add(cells[row][col]);
             }
         }
@@ -44,25 +50,10 @@ public class GUIGrid extends JFrame {
             }
         });
 
-        JButton selectButton = new JButton("Select");
-        selectButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectCell();
-            }
-        });
-
         JButton changeButton = new JButton("Change");
-        changeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                changeCell();
-            }
-        });
 
         JPanel controlPanel = new JPanel();
         controlPanel.add(solveButton);
-        controlPanel.add(selectButton);
         controlPanel.add(changeButton);
 
         add(panel, BorderLayout.CENTER);
@@ -76,15 +67,44 @@ public class GUIGrid extends JFrame {
         System.out.println("solve sudoku");
     }
 
-    private void selectCell(){
-        //TODO
-        player.tell(new PlayerActorContext.SelectCell());
-        System.out.println("select cell");
+    private class CellDocumentListener implements DocumentListener {
+        private int row, col;
+        public CellDocumentListener(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            int value = Integer.parseInt(cells[row][col].getText());
+            player.tell(new PlayerActorContext.ChangeCell(row, col, value));
+        }
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            //Chiamato quando viene rimosso del testo.
+        }
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            //Chiamato quando viene cambiato un attributo del documento
+        }
     }
-    private void changeCell(){
-        //TODO
-        player.tell(new PlayerActorContext.ChangeCell());
-        System.out.println("change value cell");
+    private class CellFocusListener implements FocusListener {
+        private int row, col;
+
+        public CellFocusListener(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+
+        @Override
+        public void focusGained(FocusEvent e) {
+            cells[row][col].setBackground(Color.CYAN);
+            player.tell(new PlayerActorContext.SelectCell(row, col));
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            cells[row][col].setBackground(Color.WHITE);
+        }
     }
 
 }

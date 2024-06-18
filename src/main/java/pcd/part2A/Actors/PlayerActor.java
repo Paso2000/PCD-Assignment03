@@ -6,6 +6,7 @@ import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
+import akka.actor.typed.receptionist.Receptionist;
 import pcd.part2A.GUI.GUIGrid;
 import pcd.part2A.messages.PlayerActorContext;
 
@@ -13,22 +14,21 @@ import java.util.List;
 import java.util.Optional;
 
 public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
-
     private boolean isLeader;
     private Optional<List<ActorRef>> otherPlayers;
     private GUIGrid gui;
 
 
-    public PlayerActor(ActorContext<PlayerActorContext> context) {
+    public PlayerActor(ActorContext<PlayerActorContext> context, Boolean isLeader) {
         super(context);
+        this.isLeader = isLeader;
         gui = new GUIGrid(context.getSelf());
         gui.setVisible(true);
         //context.getSystem().receptionist().tell(Receptionist.subscribe(GamesActor.SERVICE_KEY, context));
     }
 
-
-    public static Behavior<PlayerActorContext> create(){
-        return Behaviors.setup(ctx -> new PlayerActor(ctx));
+    public static Behavior<PlayerActorContext> create(Boolean isLeader){
+        return Behaviors.setup(ctx -> new PlayerActor(ctx, isLeader));
     }
 
     @Override
@@ -46,12 +46,15 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     }
 
     private Behavior<PlayerActorContext> onValueChanged(PlayerActorContext.ChangeCell changeCell) {
-        System.out.println("message value change received");
+        System.out.println("message value change received: ");
+        System.out.println("row: " + changeCell.row +
+                " col: " + changeCell.col + " value: " + changeCell.value);
         return Behaviors.same();
     }
 
     private Behavior<PlayerActorContext> onCellSelected(PlayerActorContext.SelectCell selectCell) {
         System.out.println("message cell selected received");
+        System.out.println("row: " + selectCell.row + " col: " + selectCell.col);
         return Behaviors.same();
     }
 

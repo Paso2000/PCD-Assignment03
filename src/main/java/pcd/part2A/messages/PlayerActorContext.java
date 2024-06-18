@@ -14,11 +14,24 @@ public abstract class PlayerActorContext {
         //add construttore
     }
     public static final class SelectCell extends PlayerActorContext{
-        //add campi
-        //add construttore
+        public int row;
+        public int col;
+        public SelectCell(int row, int col) {
+            super();
+            this.row = row;
+            this.col = col;
+        }
     }
+
     public static final class ChangeCell extends PlayerActorContext{
-        //add campi
-        //add construttore
+        public int row;
+        public int col;
+        public int value;
+        public ChangeCell(int row, int col, int value) {
+            super();
+            this.row = row;
+            this.col = col;
+            this.value = value;
+        }
     }
 }

@@ -8,7 +8,6 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import pcd.part2A.Actors.GamesActor;
 import pcd.part2A.Actors.PlayerActor;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,9 +19,9 @@ public class Utils {
         overrides.put("akka.cluster.roles", Collections.singletonList(role));
         Config config = ConfigFactory.parseMap(overrides)
                 .withFallback(ConfigFactory.load("transformation"));
-
         ActorSystem<Void> system = ActorSystem.create(RootBehavior.create(), "ClusterSystem", config);
     }
+
     public static class RootBehavior {
         public static Behavior<Void> create() {
             return Behaviors.setup(context -> {
@@ -31,8 +30,11 @@ public class Utils {
                 if (cluster.selfMember().hasRole("backend")) {
                     context.spawn(GamesActor.create(), "Backend");
                 }
-                if (cluster.selfMember().hasRole("player")) {
-                    context.spawn(PlayerActor.create(), "Player");
+                if (cluster.selfMember().hasRole("playerNewGame")) {
+                    context.spawn(PlayerActor.create(true), "Player");
+                }
+                if (cluster.selfMember().hasRole("playerJoinGame")) {
+                    context.spawn(PlayerActor.create(false), "Player");
                 }
                 return Behaviors.empty();
             });
