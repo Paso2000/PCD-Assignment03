@@ -60,7 +60,6 @@ public class App extends JFrame {
             String command = e.getActionCommand();
             if (command.equals("New Game")) {
                 startup("player", 0);
-                startup("gui", 0);
                 //mando un messaggio a GamesActor per dirgli start partita e il leader
 
             } else if (command.equals("Enter in a game")) {

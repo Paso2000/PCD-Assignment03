@@ -8,19 +8,17 @@ import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import pcd.part2A.GUI.GUIGrid;
+import pcd.part2A.messages.GamesActorContext;
 import pcd.part2A.messages.GridActorContext;
 import pcd.part2A.messages.PlayerActorContext;
 
 
 public class GridActor extends AbstractBehavior<GridActorContext> {
     ActorRef<PlayerActorContext> playerActorContextActorRef;
-    GUIGrid gui;
 
     public GridActor(ActorContext<GridActorContext> context, ActorRef<PlayerActorContext> playerActorContextActorRef) {
         super(context);
         this.playerActorContextActorRef = playerActorContextActorRef;
-        gui = new GUIGrid();
-        gui.setVisible(true);
     }
 
     public static Behavior<GridActorContext> create(ActorRef<PlayerActorContext> playerActorContextActorRef){
@@ -30,7 +28,14 @@ public class GridActor extends AbstractBehavior<GridActorContext> {
 
     @Override
     public Receive<GridActorContext> createReceive() {
-        return null;
+        return newReceiveBuilder()
+                .onMessage(GridActorContext.genericMessage.class, this::printMessage)
+                .build();
+    }
+
+    private Behavior<GridActorContext> printMessage(GridActorContext.genericMessage genericMessage) {
+        System.out.println("hai premuto solve");
+        return Behaviors.same();
     }
 }
 

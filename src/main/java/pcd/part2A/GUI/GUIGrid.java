@@ -1,5 +1,7 @@
 package pcd.part2A.GUI;
-import pcd.part2A.Actors.GridActor;
+
+import akka.actor.typed.ActorRef;
+import pcd.part2A.messages.GridActorContext;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,8 +11,10 @@ import java.awt.event.ActionListener;
 public class GUIGrid extends JFrame {
     private static final int GRID_SIZE = 9;
     private JTextField[][] cells;
+    private ActorRef<GridActorContext> gridActorRef;
 
-    public GUIGrid() {
+    public GUIGrid(ActorRef<GridActorContext> gridActorRef) {
+        this.gridActorRef = gridActorRef;
         cells = new JTextField[GRID_SIZE][GRID_SIZE];
         initUI();
     }
@@ -58,6 +62,8 @@ public class GUIGrid extends JFrame {
 
     private void solveSudoku() {
         // TODO
+        //test messages
+        gridActorRef.tell(new GridActorContext.genericMessage());
         System.out.println("solve sudoku");
     }
     private void clearGrid(){

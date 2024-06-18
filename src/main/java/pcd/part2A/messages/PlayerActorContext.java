@@ -8,8 +8,9 @@ import jnr.ffi.annotations.In;
  * with list of message that receive
  */
 public abstract class PlayerActorContext {
-    public static final class CellSelected extends PlayerActorContext{
+    public static final class genericMessage extends PlayerActorContext{}
 
+    public static final class CellSelected extends PlayerActorContext{
     }
     public static final class CellUpdated extends PlayerActorContext{
         public Pair<Integer,Integer> coordinate;
