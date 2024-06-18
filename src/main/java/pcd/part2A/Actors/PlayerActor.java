@@ -1,11 +1,13 @@
 package pcd.part2A.Actors;
 
-import akka.actor.ActorRef;
+import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
+import akka.actor.typed.receptionist.Receptionist;
+import pcd.part2A.messages.GridActorContext;
 import pcd.part2A.messages.PlayerActorContext;
 
 import java.util.List;
@@ -15,9 +17,13 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
 
     private boolean isLeader;
     Optional<List<ActorRef>> otherPlayers;
+    private ActorRef<GridActorContext> gridActorRef;
+
 
     public PlayerActor(ActorContext<PlayerActorContext> context) {
         super(context);
+        gridActorRef = context.spawnAnonymous(GridActor.create(context.getSelf()));
+        //context.getSystem().receptionist().tell(Receptionist.subscribe(GamesActor.SERVICE_KEY, context));
     }
 
 

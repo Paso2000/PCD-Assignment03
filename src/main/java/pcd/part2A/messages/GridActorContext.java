@@ -1,4 +1,8 @@
 package pcd.part2A.messages;
 
-public class GridActorContext {
+public abstract class GridActorContext {
+    public static final class genericMessage extends GamesActorContext{
+        //add campi
+        //add construttore
+    }
 }

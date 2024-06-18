@@ -1,6 +1,5 @@
 package pcd.part2A.GUI;
 import pcd.part2A.Actors.GridActor;
-import pcd.part2A.sudoku.SudokuSolver;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,15 +7,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GUIGrid extends JFrame {
-    private static final int GRID_SIZE = GridActor.SIZE;
+    private static final int GRID_SIZE = 9;
     private JTextField[][] cells;
-    private GridActor grid;
-    private SudokuSolver solver;
-
 
     public GUIGrid() {
-        grid = new GridActor();
-        solver = new SudokuSolver();
         cells = new JTextField[GRID_SIZE][GRID_SIZE];
         initUI();
     }
@@ -63,36 +57,12 @@ public class GUIGrid extends JFrame {
     }
 
     private void solveSudoku() {
-        for (int row = 0; row < GRID_SIZE; row++) {
-            for (int col = 0; col < GRID_SIZE; col++) {
-                String text = cells[row][col].getText();
-                if (!text.isEmpty()) {
-                    int value = Integer.parseInt(text);
-                    grid.setCell(row, col, value, true);
-                } else {
-                    grid.setCell(row, col, 0, false);
-                }
-            }
-        }
-
-        if (solver.solve(grid)) {
-            for (int row = 0; row < GRID_SIZE; row++) {
-                for (int col = 0; col < GRID_SIZE; col++) {
-                    cells[row][col].setText(String.valueOf(grid.getCell(row, col).getValue()));
-                }
-            }
-            JOptionPane.showMessageDialog(this, "Sudoku solved successfully!");
-        } else {
-            JOptionPane.showMessageDialog(this, "Unable to solve the Sudoku.");
-        }
+        // TODO
+        System.out.println("solve sudoku");
+    }
+    private void clearGrid(){
+        // TODO
+        System.out.println("clear grid");
     }
 
-    private void clearGrid() {
-        grid = new GridActor();
-        for (int row = 0; row < GRID_SIZE; row++) {
-            for (int col = 0; col < GRID_SIZE; col++) {
-                cells[row][col].setText("");
-            }
-        }
-    }
 }

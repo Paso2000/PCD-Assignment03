@@ -12,8 +12,7 @@ da postino per tutti gli altri nodi Player della stessa partita del quale ogni P
 - Grid (FE del PlayerActor, contiene una griglia con tutti i numeri inseriti dai vari giocatori)
 
 ### Altri oggetti (non-attori):
-- Main (launcher per la GUI iniziale)
-- GUI (GUI iniziale di scelta tra nuova partita e unisciti a una partita)
+- App GUI iniziale di scelta tra nuova partita e unisciti a una partita)
 - Grid (?) per rappresentare la griglia che contiene i numeri e le caselle selezionate, contiene o due array
 bidimensionali di cui uno di interi che rappresenta i numeri inseriti e uno (di cosa? di interi che ci mettiamo gli id?
 o di ActorRef direttamente?) che rappresenta quali giocatori occupano le varie caselle

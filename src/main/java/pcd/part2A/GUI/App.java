@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static pcd.part2A.Utils.startup;
+
 public class App extends JFrame {
     private JButton newGameButton;
     private JButton joinGameButton;
@@ -47,57 +49,23 @@ public class App extends JFrame {
         add(panel, BorderLayout.CENTER);
     }
     public static void main(String[] args) {
-        //creo un nuovo gamesActor
+        startup("backend", 0);
         App frame = new App();
         frame.setVisible(true);
     }
-    public static void startup(String role, int port) {
 
-        //System.out.println(role  + ":" + port + " started");
-        // Override the configuration of the port
-        Map<String, Object> overrides = new HashMap<>();
-        overrides.put("akka.remote.artery.canonical.port", port);
-        overrides.put("akka.cluster.roles", Collections.singletonList(role));
-
-        Config config = ConfigFactory.parseMap(overrides)
-                .withFallback(ConfigFactory.load("transformation"));
-
-        ActorSystem<Void> system = ActorSystem.create(RootBehavior.create(), "ClusterSystem", config);
-
-    }
     private static class ButtonClickListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             String command = e.getActionCommand();
             if (command.equals("New Game")) {
-                startup("frontend", 0);
-                startup("backend", (0));
-                //creo new PlayActor (leader)
-                //creo new GridActor
+                startup("player", 0);
+                startup("gui", 0);
                 //mando un messaggio a GamesActor per dirgli start partita e il leader
 
             } else if (command.equals("Enter in a game")) {
                 System.out.println("Enter in a game");
             }
-        }
-    }
-    private static class RootBehavior {
-        static Behavior<Void> create() {
-
-            return Behaviors.setup(context -> {
-                //inserisce il nodo nel cluster
-                Cluster cluster = Cluster.get(context.getSystem());
-
-                if (cluster.selfMember().hasRole("backend")) {
-                    context.spawn(GamesActor.create(), "Backend");
-                }
-                if (cluster.selfMember().hasRole("frontend")) {
-                    context.spawn(PlayerActor.create(), "Frontend");
-
-
-                }
-                return Behaviors.empty();
-            });
         }
     }
 }

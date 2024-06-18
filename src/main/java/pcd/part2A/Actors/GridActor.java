@@ -1,55 +1,31 @@
 package pcd.part2A.Actors;
 
+
+import akka.actor.typed.ActorRef;
+import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.AbstractBehavior;
+import akka.actor.typed.javadsl.ActorContext;
+import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
-import pcd.part2A.messages.GamesActorContext;
+import pcd.part2A.GUI.GUIGrid;
 import pcd.part2A.messages.GridActorContext;
-import pcd.part2A.sudoku.Cell;
+import pcd.part2A.messages.PlayerActorContext;
+
 
 public class GridActor extends AbstractBehavior<GridActorContext> {
-    private Cell[][] grid;
-    public static final int SIZE = 9;
+    ActorRef<PlayerActorContext> playerActorContextActorRef;
+    GUIGrid gui;
 
-    public GridActor() {
-        super();
-        grid = new Cell[SIZE][SIZE];
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                grid[i][j] = new Cell(0, false); // inizialmente tutte le celle sono vuote e non fisse
-            }
-        }
+    public GridActor(ActorContext<GridActorContext> context, ActorRef<PlayerActorContext> playerActorContextActorRef) {
+        super(context);
+        this.playerActorContextActorRef = playerActorContextActorRef;
+        gui = new GUIGrid();
+        gui.setVisible(true);
     }
 
-    public Cell getCell(int row, int col) {
-        return grid[row][col];
-    }
-
-    public void setCell(int row, int col, int value, boolean isFixed) {
-        grid[row][col].setValue(value);
-        grid[row][col].setFixed(isFixed);
-    }
-
-    public boolean isComplete() {
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                if (grid[i][j].getValue() == 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                sb.append(grid[i][j].toString()).append(" ");
-            }
-            sb.append("\n");
-        }
-        return sb.toString();
+    public static Behavior<GridActorContext> create(ActorRef<PlayerActorContext> playerActorContextActorRef){
+        System.out.println("GridActor created");
+        return Behaviors.setup(ctx -> new GridActor(ctx, playerActorContextActorRef));
     }
 
     @Override
