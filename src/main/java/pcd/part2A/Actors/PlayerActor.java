@@ -8,6 +8,7 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import akka.actor.typed.receptionist.Receptionist;
 import pcd.part2A.GUI.GUIGrid;
+import pcd.part2A.messages.GamesActorContext;
 import pcd.part2A.messages.PlayerActorContext;
 
 import java.util.List;
@@ -19,6 +20,16 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     private GUIGrid gui;
     private ActorRef<Receptionist.Listing> list;
 
+    private ActorRef<GamesActorContext> games;
+
+    private static class ListingResponse extends PlayerActorContext {
+        final Receptionist.Listing listing;
+
+        private ListingResponse(Receptionist.Listing listing) {
+            this.listing = listing;
+        }
+    }
+
 
     public PlayerActor(ActorContext<PlayerActorContext> context, Boolean isLeader) {
         super(context);
@@ -26,6 +37,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         gui = new GUIGrid(context.getSelf());
         gui.setVisible(true);
         context.getSystem().receptionist().tell(Receptionist.subscribe(GamesActor.SERVICE_KEY, list));
+        list=context.messageAdapter(Receptionist.Listing.class, ListingResponse::new);
     }
 
     public static Behavior<PlayerActorContext> create(Boolean isLeader){
@@ -38,7 +50,13 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 .onMessage(PlayerActorContext.SelectCell.class, this::onCellSelected)
                 .onMessage(PlayerActorContext.ChangeCell.class, this::onValueChanged)
                 .onMessage(PlayerActorContext.SolveSudoku.class, this::onSudokuSolved)
+                .onMessage(ListingResponse.class, response-> onList(response.listing))
                 .build();
+    }
+
+    private Behavior<PlayerActorContext> onList(Receptionist.Listing msg) {
+        games = msg.getServiceInstances(GamesActor.SERVICE_KEY).iterator().next();
+       return Behaviors.same();
     }
 
     private Behavior<PlayerActorContext> onSudokuSolved(PlayerActorContext.SolveSudoku solveSudoku) {
