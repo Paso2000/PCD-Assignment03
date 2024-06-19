@@ -1,21 +1,9 @@
 package pcd.part2A.GUI;
-import akka.actor.typed.ActorSystem;
-import akka.actor.typed.Behavior;
-import akka.actor.typed.javadsl.Behaviors;
-import akka.cluster.typed.Cluster;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import pcd.part2A.Actors.GamesActor;
-import pcd.part2A.Actors.PlayerActor;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import static pcd.part2A.Utils.startup;
 
 public class App extends JFrame {
