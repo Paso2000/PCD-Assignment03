@@ -17,6 +17,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     private boolean isLeader;
     private Optional<List<ActorRef>> otherPlayers;
     private GUIGrid gui;
+    private ActorRef<Receptionist.Listing> list;
 
 
     public PlayerActor(ActorContext<PlayerActorContext> context, Boolean isLeader) {
@@ -24,7 +25,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         this.isLeader = isLeader;
         gui = new GUIGrid(context.getSelf());
         gui.setVisible(true);
-        //context.getSystem().receptionist().tell(Receptionist.subscribe(GamesActor.SERVICE_KEY, context));
+        context.getSystem().receptionist().tell(Receptionist.subscribe(GamesActor.SERVICE_KEY, list));
     }
 
     public static Behavior<PlayerActorContext> create(Boolean isLeader){
