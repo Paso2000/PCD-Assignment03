@@ -19,29 +19,19 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     private Optional<List<ActorRef>> otherPlayers;
     private GUIGrid gui;
     private ActorRef<Receptionist.Listing> list;
-
     private ActorRef<GamesActorContext> games;
 
-    private static class ListingResponse extends PlayerActorContext {
-        final Receptionist.Listing listing;
-
-        private ListingResponse(Receptionist.Listing listing) {
-            this.listing = listing;
-        }
-    }
-
-
-    public PlayerActor(ActorContext<PlayerActorContext> context, Boolean isLeader) {
+    public PlayerActor(ActorContext<PlayerActorContext> context, Boolean isLeader, ActorRef<GamesActorContext> games) {
         super(context);
         this.isLeader = isLeader;
+        this.games = games;
         gui = new GUIGrid(context.getSelf());
         gui.setVisible(true);
-        context.getSystem().receptionist().tell(Receptionist.subscribe(GamesActor.SERVICE_KEY, list));
-        list=context.messageAdapter(Receptionist.Listing.class, ListingResponse::new);
+        games.tell(new GamesActorContext.startNewSudoku());
     }
 
-    public static Behavior<PlayerActorContext> create(Boolean isLeader){
-        return Behaviors.setup(ctx -> new PlayerActor(ctx, isLeader));
+    public static Behavior<PlayerActorContext> create(Boolean isLeader, ActorRef<GamesActorContext> games){
+        return Behaviors.setup(ctx -> new PlayerActor(ctx, isLeader, games));
     }
 
     @Override
@@ -50,13 +40,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 .onMessage(PlayerActorContext.SelectCell.class, this::onCellSelected)
                 .onMessage(PlayerActorContext.ChangeCell.class, this::onValueChanged)
                 .onMessage(PlayerActorContext.SolveSudoku.class, this::onSudokuSolved)
-                .onMessage(ListingResponse.class, response-> onList(response.listing))
                 .build();
-    }
-
-    private Behavior<PlayerActorContext> onList(Receptionist.Listing msg) {
-        games = msg.getServiceInstances(GamesActor.SERVICE_KEY).iterator().next();
-       return Behaviors.same();
     }
 
     private Behavior<PlayerActorContext> onSudokuSolved(PlayerActorContext.SolveSudoku solveSudoku) {
