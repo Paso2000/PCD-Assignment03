@@ -67,26 +67,41 @@ public class GUIGrid extends JFrame {
         System.out.println("solve sudoku");
     }
 
+    public void render(int[][] grid) {
+        for (int row = 0; row < GRID_SIZE; row++) {
+            for (int col = 0; col < GRID_SIZE; col++) {
+                if (Integer.parseInt(cells[row][col].getText()) != grid[row][col]) {
+                    cells[row][col].setText(String.valueOf(grid[row][col]));
+                }
+            }
+        }
+    }
+
     private class CellDocumentListener implements DocumentListener {
         private int row, col;
+
         public CellDocumentListener(int row, int col) {
             this.row = row;
             this.col = col;
         }
+
         @Override
         public void insertUpdate(DocumentEvent e) {
             int value = Integer.parseInt(cells[row][col].getText());
             player.tell(new PlayerActorContext.ChangeCell(row, col, value));
         }
+
         @Override
         public void removeUpdate(DocumentEvent e) {
             //Chiamato quando viene rimosso del testo.
         }
+
         @Override
         public void changedUpdate(DocumentEvent e) {
             //Chiamato quando viene cambiato un attributo del documento
         }
     }
+
     private class CellFocusListener implements FocusListener {
         private int row, col;
 
@@ -107,4 +122,9 @@ public class GUIGrid extends JFrame {
         }
     }
 
+    public void selectCell(int row, int col) {
+        if (cells[row][col].getBackground() != Color.CYAN) {
+            cells[row][col].setBackground(Color.GREEN);
+        }
+    }
 }
