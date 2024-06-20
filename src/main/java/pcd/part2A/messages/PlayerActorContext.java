@@ -33,5 +33,16 @@ public abstract class PlayerActorContext {
             this.col = col;
             this.value = value;
         }
+}
+    public static final class SetCell extends PlayerActorContext{
+        public int row;
+        public int col;
+        public int value;
+        public SetCell(int row, int col, int value) {
+            super();
+            this.row = row;
+            this.col = col;
+            this.value = value;
+        }
     }
 }

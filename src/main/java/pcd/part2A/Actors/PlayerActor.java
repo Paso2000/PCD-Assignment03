@@ -16,10 +16,13 @@ import java.util.Optional;
 
 public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     private boolean isLeader;
-    private Optional<List<ActorRef>> otherPlayers;
+
+    private ActorRef<PlayerActorContext> leader;
+    private List<ActorRef<PlayerActorContext>> otherPlayers;
     private GUIGrid gui;
     private ActorRef<Receptionist.Listing> list;
 
+    private ActorRef<Receptionist.Listing> messageAdapter;
     private ActorRef<GamesActorContext> games;
 
     private static class ListingResponse extends PlayerActorContext {
@@ -36,8 +39,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         this.isLeader = isLeader;
         gui = new GUIGrid(context.getSelf());
         gui.setVisible(true);
-        context.getSystem().receptionist().tell(Receptionist.subscribe(GamesActor.SERVICE_KEY, list));
-        list=context.messageAdapter(Receptionist.Listing.class, ListingResponse::new);
+        messageAdapter=context.messageAdapter(Receptionist.Listing.class, ListingResponse::new);
     }
 
     public static Behavior<PlayerActorContext> create(Boolean isLeader){
@@ -50,12 +52,17 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 .onMessage(PlayerActorContext.SelectCell.class, this::onCellSelected)
                 .onMessage(PlayerActorContext.ChangeCell.class, this::onValueChanged)
                 .onMessage(PlayerActorContext.SolveSudoku.class, this::onSudokuSolved)
-                .onMessage(ListingResponse.class, response-> onList(response.listing))
+                .onMessage(PlayerActorContext.SetCell.class, this::onValueSet)
                 .build();
     }
 
-    private Behavior<PlayerActorContext> onList(Receptionist.Listing msg) {
-        games = msg.getServiceInstances(GamesActor.SERVICE_KEY).iterator().next();
+    private synchronized Behavior<PlayerActorContext> onValueSet(PlayerActorContext.SetCell setCell) {
+
+    }
+
+    private Behavior<Receptionist.Listing> onList(Receptionist.Listing msg) {
+        //games = msg.allServiceInstances(GamesActor.SERVICE_KEY).iterator().next();
+        //games.tell(new GamesActorContext.startNewSudoku());
        return Behaviors.same();
     }
 
@@ -65,6 +72,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     }
 
     private Behavior<PlayerActorContext> onValueChanged(PlayerActorContext.ChangeCell changeCell) {
+        leader.tell(new PlayerActorContext.SetCell(changeCell.row,changeCell.col,changeCell.value));
         System.out.println("message value change received: ");
         System.out.println("row: " + changeCell.row +
                 " col: " + changeCell.col + " value: " + changeCell.value);

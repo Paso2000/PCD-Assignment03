@@ -15,12 +15,13 @@ import java.util.Map;
 
 public class GamesActor extends AbstractBehavior<GamesActorContext> {
     Map<Integer, Map<ActorRef, List<ActorRef>>> game;
+
     public static final ServiceKey<GamesActorContext> SERVICE_KEY = ServiceKey.create(GamesActorContext.class, "ServiceKey");
 
     public GamesActor(ActorContext<GamesActorContext> context) {
         super(context);
         //registra se stesso al receptionist attraversio la servikey
-        context.getSystem().receptionist().tell(Receptionist.register(SERVICE_KEY, context.getSelf()));
+        context.getSystem().receptionist().tell(Receptionist.register(GamesActor.SERVICE_KEY, context.getSelf().narrow()));
     }
 
     public static Behavior<GamesActorContext> create() {
@@ -35,8 +36,8 @@ public class GamesActor extends AbstractBehavior<GamesActorContext> {
     }
 
     private Behavior<GamesActorContext> onStartNewGame(GamesActorContext.startNewSudoku startNewSudoku) {
-        System.out.println("start new game");
-        return null;
+        System.out.println("");
+        return Behaviors.same();
     }
     
 }
