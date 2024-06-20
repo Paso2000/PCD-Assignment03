@@ -27,7 +27,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         this.games = games;
         gui = new GUIGrid(context.getSelf());
         gui.setVisible(true);
-        games.tell(new GamesActorContext.startNewSudoku());
+        this.games.tell(new GamesActorContext.StartNewSudoku(context.getSelf()));
     }
 
     public static Behavior<PlayerActorContext> create(Boolean isLeader, ActorRef<GamesActorContext> games){
