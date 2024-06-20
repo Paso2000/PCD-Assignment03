@@ -1,28 +1,39 @@
 package pcd.part2A.GUI;
 
+import jnr.ffi.annotations.In;
+import scala.Int;
+
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Optional;
+import java.util.stream.IntStream;
+
 import static pcd.part2A.Utils.startup;
 
 public class App extends JFrame {
     private JButton newGameButton;
     private JButton joinGameButton;
     private JLabel labelJoinID;
-    private JTextField fieldJoinID;
+    private static JComboBox fieldJoinID;
 
     public App() {
         setTitle("Cooperative Sudoku");
         setSize(400, 150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel panel = new JPanel();
+        panel.setLayout(null); // Usa layout null per posizionare manualmente i componenti
 
         newGameButton = new JButton("New Game");
         joinGameButton = new JButton("Enter in a game");
-        labelJoinID = new JLabel("ID:");
-        fieldJoinID = new JTextField(20);
+        labelJoinID = new JLabel("Game ID:");
+        fieldJoinID = new JComboBox<Integer>();
+        IntStream.rangeClosed(1, 5).forEach(fieldJoinID::addItem);
 
+        // Imposta le dimensioni e le posizioni dei componenti
+        newGameButton.setBounds(10, 60, 150, 25);
+        joinGameButton.setBounds(200, 60, 150, 25);
         labelJoinID.setBounds(10, 20, 80, 25);
         fieldJoinID.setBounds(100, 20, 165, 25);
 
@@ -37,7 +48,7 @@ public class App extends JFrame {
         add(panel, BorderLayout.CENTER);
     }
     public static void main(String[] args) {
-        startup("backend", 0);
+        startup("backend", 0, Optional.empty());
         App frame = new App();
         frame.setVisible(true);
     }
@@ -47,12 +58,11 @@ public class App extends JFrame {
         public void actionPerformed(ActionEvent e) {
             String command = e.getActionCommand();
             if (command.equals("New Game")) {
-                startup("playerNewGame", 0);
-                //mando un messaggio a GamesActor per dirgli start partita e il leader
-                //GamesActorRef.tell(new GamesActorContext.newGame(leader))
+                startup("playerNewGame", 0, Optional.empty());
 
             } else if (command.equals("Enter in a game")) {
-                System.out.println("Enter in a game");
+                //passo il valore della comboBox con la partita a cui voglio partecipare
+                startup("playerJoinGame", 0, Optional.ofNullable((Integer) fieldJoinID.getSelectedItem()));
             }
         }
     }

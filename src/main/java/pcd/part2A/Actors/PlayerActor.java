@@ -10,6 +10,7 @@ import akka.actor.typed.receptionist.Receptionist;
 import pcd.part2A.GUI.GUIGrid;
 import pcd.part2A.messages.GamesActorContext;
 import pcd.part2A.messages.PlayerActorContext;
+import scala.Int;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,17 +22,26 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     private ActorRef<Receptionist.Listing> list;
     private ActorRef<GamesActorContext> games;
 
-    public PlayerActor(ActorContext<PlayerActorContext> context, Boolean isLeader, ActorRef<GamesActorContext> games) {
+    public PlayerActor(ActorContext<PlayerActorContext> context, Boolean isLeader, ActorRef<GamesActorContext> games, Optional<Integer> nGame) {
         super(context);
         this.isLeader = isLeader;
         this.games = games;
         gui = new GUIGrid(context.getSelf());
         gui.setVisible(true);
-        this.games.tell(new GamesActorContext.StartNewSudoku(context.getSelf()));
+        notifyGamesActor(context, isLeader, nGame);
     }
 
-    public static Behavior<PlayerActorContext> create(Boolean isLeader, ActorRef<GamesActorContext> games){
-        return Behaviors.setup(ctx -> new PlayerActor(ctx, isLeader, games));
+    private void notifyGamesActor(ActorContext<PlayerActorContext> context, Boolean isLeader, Optional<Integer> nGame) {
+    if (isLeader){
+        this.games.tell(new GamesActorContext.StartNewSudoku(context.getSelf()));
+    }
+    else{
+        this.games.tell(new GamesActorContext.JoinInGrid(context.getSelf(), nGame));
+    }
+    }
+
+    public static Behavior<PlayerActorContext> create(Boolean isLeader, ActorRef<GamesActorContext> games, Optional<Integer> nGame){
+        return Behaviors.setup(ctx -> new PlayerActor(ctx, isLeader, games, nGame));
     }
 
     @Override

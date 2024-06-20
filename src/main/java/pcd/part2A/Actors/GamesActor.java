@@ -8,6 +8,7 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import akka.actor.typed.receptionist.Receptionist;
 import akka.actor.typed.receptionist.ServiceKey;
+import akka.japi.Pair;
 import pcd.part2A.messages.GamesActorContext;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GamesActor extends AbstractBehavior<GamesActorContext> {
-    private Map<Integer, Map<ActorRef, List<ActorRef>>> games;
+    private Map<Integer, Pair<ActorRef, List<ActorRef>>> games;
     private int gamesNumber;
     public static final ServiceKey<GamesActorContext> SERVICE_KEY = ServiceKey.create(GamesActorContext.class, "ServiceKey");
 
@@ -36,13 +37,22 @@ public class GamesActor extends AbstractBehavior<GamesActorContext> {
     public Receive<GamesActorContext> createReceive() {
         return newReceiveBuilder()
                 .onMessage(GamesActorContext.StartNewSudoku.class, this::onStartNewGame)
+                .onMessage(GamesActorContext.JoinInGrid.class, this::onJoinInGrid)
                 .build();
+    }
+
+    private Behavior<GamesActorContext> onJoinInGrid(GamesActorContext.JoinInGrid joinInGrid) {
+        //aggiugne il player corrente nella lista di quella partita
+        //manda un messaggio al leader, con il riferimento del player
+        System.out.println("Join message received: " + joinInGrid.nGame);
+        games.get(joinInGrid.nGame.get()).second().add(joinInGrid.player);
+        System.out.println("Join message received: " + games);
+        return Behaviors.same();
     }
 
     private Behavior<GamesActorContext> onStartNewGame(GamesActorContext.StartNewSudoku startNewSudoku) {
         gamesNumber++;
-        Map<ActorRef, List<ActorRef>> allPlayers = new HashMap<>();
-        allPlayers.put(startNewSudoku.leader, new ArrayList<ActorRef>());
+        Pair<ActorRef, List<ActorRef>> allPlayers  = new Pair<>(startNewSudoku.leader, new ArrayList<ActorRef>());
         games.put(gamesNumber, allPlayers);
         System.out.println(games);
         System.out.println("start new game");
