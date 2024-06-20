@@ -2,6 +2,9 @@ package pcd.part2A.messages;
 
 import akka.actor.typed.ActorRef;
 
+import java.util.List;
+import java.util.Optional;
+
 
 /**
  * Context about Player actor,
@@ -79,5 +82,12 @@ public abstract class PlayerActorContext {
         }
     }
     public static final class SendData extends PlayerActorContext{
+        public ActorRef<PlayerActorContext> leader;
+        public Optional<List<ActorRef<PlayerActorContext>>> otherPlayers;
+        public SendData(ActorRef<PlayerActorContext> leader, Optional<List<ActorRef<PlayerActorContext>>> otherPlayers) {
+            super();
+            this.leader = leader;
+            this.otherPlayers = otherPlayers;
+        }
     }
 }

@@ -12,14 +12,14 @@ import pcd.part2A.messages.GamesActorContext;
 import pcd.part2A.messages.PlayerActorContext;
 import scala.Int;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     private boolean isLeader;
-
     private ActorRef<PlayerActorContext> leader;
-    private Optional<List<ActorRef<PlayerActorContext>>> otherPlayers = Optional.empty();
+    private Optional<List<ActorRef<PlayerActorContext>>> otherPlayers = Optional.of(new ArrayList<>());
     private GUIGrid gui;
     private ActorRef<Receptionist.Listing> list;
 
@@ -38,8 +38,8 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     }
 
     private void notifyGamesActor(ActorContext<PlayerActorContext> context, Boolean isLeader, Optional<Integer> nGame) {
-        if (isLeader) {
-            this.leader=context.getSelf();
+        if (this.isLeader) {
+            this.leader = context.getSelf();
             this.games.tell(new GamesActorContext.StartNewSudoku(context.getSelf()));
         } else {
             this.games.tell(new GamesActorContext.JoinInGrid(context.getSelf(), nGame));
@@ -64,23 +64,21 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 .onMessage(PlayerActorContext.SendData.class, this::onSendData)
                 .build();
     }
-
-
-    private Behavior<Receptionist.Listing> onList(Receptionist.Listing msg) {
-        //games = msg.allServiceInstances(GamesActor.SERVICE_KEY).iterator().next();
-        //games.tell(new GamesActorContext.startNewSudoku());
-        return Behaviors.same();
-    }
-
-    private Behavior<PlayerActorContext> onSendData(PlayerActorContext.SendData sendData) {
-        System.out.println("Aggiunto un nuovo player alla partita");
-        return Behaviors.same();
-    }
-
-
+    //LEADER METHODS
+    //il leader riceve onNotifyNewPlayer e manda un messaggio al nuovo player aggiornandolo
     private Behavior<PlayerActorContext> onNotifyNewPlayer(PlayerActorContext.NotifyNewPlayer notifyNewPlayer) {
-        //mando un messaggio al player di cui ai il ref
-        notifyNewPlayer.newPlayer.tell(new PlayerActorContext.SendData());
+        //aggiorno la mappa players
+        otherPlayers.get().add(notifyNewPlayer.newPlayer);
+        //gli devo mandare leader, stato della cella e lista players
+        notifyNewPlayer.newPlayer.tell(new PlayerActorContext.SendData(leader, otherPlayers));
+        return Behaviors.same();
+    }
+
+    //JOINED PLAYER METHODS
+    private Behavior<PlayerActorContext> onSendData(PlayerActorContext.SendData sendData) {
+        this.leader = sendData.leader;
+        this.otherPlayers = sendData.otherPlayers;
+        System.out.println("onSendData");
         return Behaviors.same();
     }
 
