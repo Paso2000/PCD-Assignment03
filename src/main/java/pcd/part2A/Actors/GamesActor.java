@@ -51,7 +51,6 @@ public class GamesActor extends AbstractBehavior<GamesActorContext> {
     }
 
     private Behavior<GamesActorContext> onStartNewGame(GamesActorContext.StartNewSudoku startNewSudoku) {
-
         gamesNumber++;
         Pair<ActorRef<PlayerActorContext>, List<ActorRef<PlayerActorContext>>> allPlayers  = new Pair<>(startNewSudoku.leader, new ArrayList<ActorRef<PlayerActorContext>>());
         this.games.put(gamesNumber, allPlayers);

@@ -34,8 +34,6 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         this.games = games;
         gui = new GUIGrid(context.getSelf());
         gui.setVisible(true);
-        //messageAdapter=context.messageAdapter(Receptionist.Listing.class, ListingResponse::new);
-        this.games.tell(new GamesActorContext.StartNewSudoku(context.getSelf()));
         notifyGamesActor(context,isLeader,nGame);
     }
 
