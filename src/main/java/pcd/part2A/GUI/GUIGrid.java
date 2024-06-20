@@ -22,7 +22,13 @@ public class GUIGrid extends JFrame {
         cells = new JTextField[GRID_SIZE][GRID_SIZE];
         initUI();
     }
-
+    public void cleanGUI(){
+        for (int row = 0; row < GRID_SIZE; row++) {
+            for (int col = 0; col < GRID_SIZE; col++) {
+                cells[row][col].setBackground(Color.WHITE);
+            }
+        }
+    }
     private void initUI() {
         setTitle("Cooperative Sudoku");
         setSize(600, 600);
@@ -50,11 +56,8 @@ public class GUIGrid extends JFrame {
             }
         });
 
-        JButton changeButton = new JButton("Change");
-
         JPanel controlPanel = new JPanel();
         controlPanel.add(solveButton);
-        controlPanel.add(changeButton);
 
         add(panel, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
@@ -74,6 +77,11 @@ public class GUIGrid extends JFrame {
                     cells[row][col].setText(String.valueOf(grid[row][col]));
                 }
             }
+        }
+    }
+    public void selectCell(int row, int col) {
+        if (cells[row][col].getBackground() != Color.CYAN) {
+            cells[row][col].setBackground(Color.CYAN);
         }
     }
 
@@ -122,9 +130,4 @@ public class GUIGrid extends JFrame {
         }
     }
 
-    public void selectCell(int row, int col) {
-        if (cells[row][col].getBackground() != Color.CYAN) {
-            cells[row][col].setBackground(Color.GREEN);
-        }
-    }
 }

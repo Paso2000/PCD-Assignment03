@@ -73,6 +73,14 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         notifyNewPlayer.newPlayer.tell(new PlayerActorContext.SendData(leader, otherPlayers));
         return Behaviors.same();
     }
+    private synchronized Behavior<PlayerActorContext> onLeaderSelect(PlayerActorContext.LeaderSelect leaderSelect) {
+        gui.cleanGUI();
+        gui.selectCell(leaderSelect.row, leaderSelect.col);
+        otherPlayers.ifPresent(actorRefs
+                -> actorRefs.forEach(player
+                -> player.tell(new PlayerActorContext.SelectCellOfEveryone(leaderSelect.row, leaderSelect.col))));
+        return Behaviors.same();
+    }
 
     //JOINED PLAYER METHODS
     private Behavior<PlayerActorContext> onSendData(PlayerActorContext.SendData sendData) {
@@ -112,22 +120,14 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     }
 
     private Behavior<PlayerActorContext> onCellSelected(PlayerActorContext.SelectCell selectCell) {
-        System.out.println("message cell selected received");
-        System.out.println("row: " + selectCell.row + " col: " + selectCell.col);
+        //System.out.println("message cell selected received");
+        //System.out.println("row: " + selectCell.row + " col: " + selectCell.col);
         leader.tell(new PlayerActorContext.LeaderSelect(selectCell.row, selectCell.col));
         return Behaviors.same();
     }
 
-    private synchronized Behavior<PlayerActorContext> onLeaderSelect(PlayerActorContext.LeaderSelect leaderSelect) {
-        gui.selectCell(leaderSelect.row, leaderSelect.col);
-        if( !otherPlayers.isEmpty()) {
-            otherPlayers.get().forEach(player -> player.tell(new PlayerActorContext.SelectCellOfEveryone(leaderSelect.row, leaderSelect.col)));
-        }
-        return Behaviors.same();
-    }
-
-    private Behavior<PlayerActorContext> onCellSelectedForEveryone(PlayerActorContext.SelectCellOfEveryone
-                                                                           selectCellOfEveryone) {
+    private Behavior<PlayerActorContext> onCellSelectedForEveryone(PlayerActorContext.SelectCellOfEveryone selectCellOfEveryone) {
+        gui.cleanGUI();
         gui.selectCell(selectCellOfEveryone.row, selectCellOfEveryone.col);
         return Behaviors.same();
     }
