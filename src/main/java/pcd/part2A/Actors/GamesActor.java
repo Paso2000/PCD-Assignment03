@@ -10,6 +10,7 @@ import akka.actor.typed.receptionist.Receptionist;
 import akka.actor.typed.receptionist.ServiceKey;
 import akka.japi.Pair;
 import pcd.part2A.messages.GamesActorContext;
+import pcd.part2A.messages.PlayerActorContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,10 +44,10 @@ public class GamesActor extends AbstractBehavior<GamesActorContext> {
 
     private Behavior<GamesActorContext> onJoinInGrid(GamesActorContext.JoinInGrid joinInGrid) {
         //aggiugne il player corrente nella lista di quella partita
-        //manda un messaggio al leader, con il riferimento del player
-        System.out.println("Join message received: " + joinInGrid.nGame);
         games.get(joinInGrid.nGame.get()).second().add(joinInGrid.player);
-        System.out.println("Join message received: " + games);
+        //System.out.println(games);
+        //manda un messaggio al leader, con il riferimento del player
+        games.get(joinInGrid.nGame.get()).first().tell(new PlayerActorContext.NotifyNewPlayer(joinInGrid.player));
         return Behaviors.same();
     }
 

@@ -1,5 +1,6 @@
 package pcd.part2A.messages;
 
+import akka.actor.typed.ActorRef;
 import akka.japi.Pair;
 import jnr.ffi.annotations.In;
 import pcd.part2A.Actors.PlayerActor;
@@ -22,7 +23,6 @@ public abstract class PlayerActorContext {
             this.col = col;
         }
     }
-
     public static final class ChangeCell extends PlayerActorContext{
         public int row;
         public int col;
@@ -33,5 +33,13 @@ public abstract class PlayerActorContext {
             this.col = col;
             this.value = value;
         }
+    }
+    public static final class NotifyNewPlayer extends PlayerActorContext{
+        public ActorRef<PlayerActorContext> newPlayer;
+        public NotifyNewPlayer(ActorRef<PlayerActorContext> newPlayer){
+            this.newPlayer = newPlayer;
+        }
+    }
+    public static final class SendData extends PlayerActorContext{
     }
 }

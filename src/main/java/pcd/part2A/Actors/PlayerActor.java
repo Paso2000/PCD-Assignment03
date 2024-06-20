@@ -50,7 +50,20 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 .onMessage(PlayerActorContext.SelectCell.class, this::onCellSelected)
                 .onMessage(PlayerActorContext.ChangeCell.class, this::onValueChanged)
                 .onMessage(PlayerActorContext.SolveSudoku.class, this::onSudokuSolved)
+                .onMessage(PlayerActorContext.NotifyNewPlayer.class, this::onNotifyNewPlayer)
+                .onMessage(PlayerActorContext.SendData.class, this::onSendData)
                 .build();
+    }
+
+    private Behavior<PlayerActorContext> onSendData(PlayerActorContext.SendData sendData) {
+        System.out.println("Aggiunto un nuovo player alla partita");
+        return Behaviors.same();
+    }
+
+    private Behavior<PlayerActorContext> onNotifyNewPlayer(PlayerActorContext.NotifyNewPlayer notifyNewPlayer) {
+        //mando un messaggio al player di cui ai il ref
+        notifyNewPlayer.newPlayer.tell(new PlayerActorContext.SendData());
+        return Behaviors.same();
     }
 
     private Behavior<PlayerActorContext> onSudokuSolved(PlayerActorContext.SolveSudoku solveSudoku) {
