@@ -1,5 +1,8 @@
 package pcd.part2A.messages;
 
+import akka.actor.typed.ActorRef;
+
+
 /**
  * Context about Player actor,
  * with list of message that receive
@@ -18,7 +21,6 @@ public abstract class PlayerActorContext {
             this.col = col;
         }
     }
-
     public static final class LeaderSelect extends PlayerActorContext{
         public int row;
         public int col;
@@ -37,7 +39,6 @@ public abstract class PlayerActorContext {
             this.col = col;
         }
     }
-
     public static final class ChangeCell extends PlayerActorContext{
         public int row;
         public int col;
@@ -49,8 +50,6 @@ public abstract class PlayerActorContext {
             this.value = value;
         }
 }
-
-
     public static final class LeaderChange extends PlayerActorContext{
         public int row;
         public int col;
@@ -72,5 +71,13 @@ public abstract class PlayerActorContext {
             this.col = col;
             this.value = value;
         }
+    }
+    public static final class NotifyNewPlayer extends PlayerActorContext{
+        public ActorRef<PlayerActorContext> newPlayer;
+        public NotifyNewPlayer(ActorRef<PlayerActorContext> newPlayer){
+            this.newPlayer = newPlayer;
+        }
+    }
+    public static final class SendData extends PlayerActorContext{
     }
 }

@@ -10,14 +10,16 @@ import akka.actor.typed.receptionist.Receptionist;
 import pcd.part2A.GUI.GUIGrid;
 import pcd.part2A.messages.GamesActorContext;
 import pcd.part2A.messages.PlayerActorContext;
+import scala.Int;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     private boolean isLeader;
 
     private ActorRef<PlayerActorContext> leader;
-    private List<ActorRef<PlayerActorContext>> otherPlayers;
+    private Optional<List<ActorRef<PlayerActorContext>>> otherPlayers = Optional.empty();
     private GUIGrid gui;
     private ActorRef<Receptionist.Listing> list;
 
@@ -26,7 +28,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     private ActorRef<Receptionist.Listing> messageAdapter;
     private ActorRef<GamesActorContext> games;
 
-    public PlayerActor(ActorContext<PlayerActorContext> context, Boolean isLeader, ActorRef<GamesActorContext> games) {
+    public PlayerActor(ActorContext<PlayerActorContext> context, Boolean isLeader, ActorRef<GamesActorContext> games, Optional<Integer> nGame) {
         super(context);
         this.isLeader = isLeader;
         this.games = games;
@@ -34,10 +36,20 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         gui.setVisible(true);
         //messageAdapter=context.messageAdapter(Receptionist.Listing.class, ListingResponse::new);
         this.games.tell(new GamesActorContext.StartNewSudoku(context.getSelf()));
+        notifyGamesActor(context,isLeader,nGame);
     }
 
-    public static Behavior<PlayerActorContext> create(Boolean isLeader, ActorRef<GamesActorContext> games){
-        return Behaviors.setup(ctx -> new PlayerActor(ctx, isLeader, games));
+    private void notifyGamesActor(ActorContext<PlayerActorContext> context, Boolean isLeader, Optional<Integer> nGame) {
+        if (isLeader) {
+            this.leader=context.getSelf();
+            this.games.tell(new GamesActorContext.StartNewSudoku(context.getSelf()));
+        } else {
+            this.games.tell(new GamesActorContext.JoinInGrid(context.getSelf(), nGame));
+        }
+    }
+
+    public static Behavior<PlayerActorContext> create(Boolean isLeader, ActorRef<GamesActorContext> games, Optional<Integer> nGame) {
+        return Behaviors.setup(ctx -> new PlayerActor(ctx, isLeader, games, nGame));
     }
 
     @Override
@@ -45,11 +57,13 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         return newReceiveBuilder()
                 .onMessage(PlayerActorContext.SelectCell.class, this::onCellSelected)
                 .onMessage(PlayerActorContext.LeaderSelect.class, this::onLeaderSelect)
-                .onMessage(PlayerActorContext.SelectCellOfEveryone.class,this::onCellSelectedForEveryone)
+                .onMessage(PlayerActorContext.SelectCellOfEveryone.class, this::onCellSelectedForEveryone)
                 .onMessage(PlayerActorContext.ChangeCell.class, this::onValueChanged)
-                .onMessage(PlayerActorContext.LeaderChange.class,this::onLeaderChange)
+                .onMessage(PlayerActorContext.LeaderChange.class, this::onLeaderChange)
                 .onMessage(PlayerActorContext.ChangeCellOfEveryone.class, this::onValueChangeForEveryone)
                 .onMessage(PlayerActorContext.SolveSudoku.class, this::onSudokuSolved)
+                .onMessage(PlayerActorContext.NotifyNewPlayer.class, this::onNotifyNewPlayer)
+                .onMessage(PlayerActorContext.SendData.class, this::onSendData)
                 .build();
     }
 
@@ -57,7 +71,19 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     private Behavior<Receptionist.Listing> onList(Receptionist.Listing msg) {
         //games = msg.allServiceInstances(GamesActor.SERVICE_KEY).iterator().next();
         //games.tell(new GamesActorContext.startNewSudoku());
-       return Behaviors.same();
+        return Behaviors.same();
+    }
+
+    private Behavior<PlayerActorContext> onSendData(PlayerActorContext.SendData sendData) {
+        System.out.println("Aggiunto un nuovo player alla partita");
+        return Behaviors.same();
+    }
+
+
+    private Behavior<PlayerActorContext> onNotifyNewPlayer(PlayerActorContext.NotifyNewPlayer notifyNewPlayer) {
+        //mando un messaggio al player di cui ai il ref
+        notifyNewPlayer.newPlayer.tell(new PlayerActorContext.SendData());
+        return Behaviors.same();
     }
 
     private Behavior<PlayerActorContext> onSudokuSolved(PlayerActorContext.SolveSudoku solveSudoku) {
@@ -70,19 +96,21 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         System.out.println("message value change received: ");
         System.out.println("row: " + changeCell.row +
                 " col: " + changeCell.col + " value: " + changeCell.value);
-        leader.tell(new PlayerActorContext.LeaderChange(changeCell.row, changeCell.col ,changeCell.value));
+        leader.tell(new PlayerActorContext.LeaderChange(changeCell.row, changeCell.col, changeCell.value));
         return Behaviors.same();
     }
 
     private synchronized Behavior<PlayerActorContext> onLeaderChange(PlayerActorContext.LeaderChange leaderChange) {
-        this.grid[leaderChange.row][leaderChange.col]= leaderChange.value;
+        this.grid[leaderChange.row][leaderChange.col] = leaderChange.value;
         gui.render(grid);
-        otherPlayers.forEach(player-> player.tell(new PlayerActorContext.ChangeCellOfEveryone(leaderChange.row, leaderChange.col ,leaderChange.value)));
+        if (!otherPlayers.isEmpty()) {
+            otherPlayers.get().forEach(player -> player.tell(new PlayerActorContext.ChangeCellOfEveryone(leaderChange.row, leaderChange.col, leaderChange.value)));
+        }
         return Behaviors.same();
     }
 
     private Behavior<PlayerActorContext> onValueChangeForEveryone(PlayerActorContext.ChangeCellOfEveryone setCell) {
-        this.grid[setCell.row][setCell.col]= setCell.value;
+        this.grid[setCell.row][setCell.col] = setCell.value;
         gui.render(grid);
         return Behaviors.same();
     }
@@ -93,15 +121,20 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         leader.tell(new PlayerActorContext.LeaderSelect(selectCell.row, selectCell.col));
         return Behaviors.same();
     }
+
     private synchronized Behavior<PlayerActorContext> onLeaderSelect(PlayerActorContext.LeaderSelect leaderSelect) {
-        gui.selectCell(leaderSelect.row,leaderSelect.col);
-        otherPlayers.forEach(player-> player.tell(new PlayerActorContext.SelectCellOfEveryone(leaderSelect.row, leaderSelect.col)));
+        gui.selectCell(leaderSelect.row, leaderSelect.col);
+        if( !otherPlayers.isEmpty()) {
+            otherPlayers.get().forEach(player -> player.tell(new PlayerActorContext.SelectCellOfEveryone(leaderSelect.row, leaderSelect.col)));
+        }
         return Behaviors.same();
     }
 
-    private Behavior<PlayerActorContext> onCellSelectedForEveryone(PlayerActorContext.SelectCellOfEveryone selectCellOfEveryone) {
-        gui.selectCell(selectCellOfEveryone.row,selectCellOfEveryone.col);
+    private Behavior<PlayerActorContext> onCellSelectedForEveryone(PlayerActorContext.SelectCellOfEveryone
+                                                                           selectCellOfEveryone) {
+        gui.selectCell(selectCellOfEveryone.row, selectCellOfEveryone.col);
         return Behaviors.same();
     }
 
 }
+
