@@ -30,11 +30,11 @@ public class GamesActor extends AbstractBehavior<GamesActorContext> {
     @Override
     public Receive<GamesActorContext> createReceive() {
         return newReceiveBuilder()
-                .onMessage(GamesActorContext.startNewSudoku.class, this::onStartNewGame)
+                .onMessage(GamesActorContext.StartNewSudoku.class, this::onStartNewGame)
                 .build();
     }
 
-    private Behavior<GamesActorContext> onStartNewGame(GamesActorContext.startNewSudoku startNewSudoku) {
+    private Behavior<GamesActorContext> onStartNewGame(GamesActorContext.StartNewSudoku startNewSudoku) {
         System.out.println("start new game");
         return null;
     }
