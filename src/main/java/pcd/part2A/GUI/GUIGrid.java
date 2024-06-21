@@ -82,8 +82,15 @@ public class GUIGrid extends JFrame {
         System.out.println("solve sudoku");
     }
 
-    public void render(int row, int col, int value) {
-       cells[row][col].setText(String.valueOf(value));
+    public void render(int[][] grid) {
+        for (int row = 0; row < GRID_SIZE; row++) {
+            for (int col = 0; col < GRID_SIZE; col++) {
+                int value = grid[row][col];
+                if (value != 0) {
+                    cells[row][col].setText(String.valueOf(value));
+                }
+            }
+        }
     }
     public void selectCell(int row, int col) {
         if (cells[row][col].getBackground() != Color.CYAN) {

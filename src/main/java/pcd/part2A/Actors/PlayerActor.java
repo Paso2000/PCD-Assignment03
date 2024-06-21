@@ -24,7 +24,6 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     private GUIGrid gui;
     private ActorRef<Receptionist.Listing> list;
     private int[][] grid = new int[GRID_SIZE][GRID_SIZE];
-
     private ActorRef<Receptionist.Listing> messageAdapter;
     private ActorRef<GamesActorContext> games;
 
@@ -74,7 +73,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         //aggiorno la mappa players
         otherPlayers.get().add(notifyNewPlayer.newPlayer);
         //gli devo mandare leader, stato della cella e lista players
-        notifyNewPlayer.newPlayer.tell(new PlayerActorContext.SendData(leader, otherPlayers));
+        notifyNewPlayer.newPlayer.tell(new PlayerActorContext.SendData(leader, otherPlayers, this.grid));
         return Behaviors.same();
     }
     private synchronized Behavior<PlayerActorContext> onLeaderSelect(PlayerActorContext.LeaderSelect leaderSelect) {
@@ -88,6 +87,8 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     //JOINED PLAYER METHODS
     private Behavior<PlayerActorContext> onSendData(PlayerActorContext.SendData sendData) {
         this.leader = sendData.leader;
+        this.grid = sendData.grid;
+        gui.render(grid);
         this.otherPlayers = sendData.otherPlayers;
         System.out.println("onSendData");
         return Behaviors.same();
@@ -101,34 +102,30 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         System.out.println("message value change received: ");
         System.out.println("row: " + changeCell.row +
                 " col: " + changeCell.col + " value: " + changeCell.value);
+        this.grid[changeCell.row][changeCell.col] = changeCell.value;
         leader.tell(new PlayerActorContext.LeaderChange(changeCell.row, changeCell.col, changeCell.value));
         return Behaviors.same();
     }
-
     private synchronized Behavior<PlayerActorContext> onLeaderChange(PlayerActorContext.LeaderChange leaderChange) {
         System.out.println("leader received message value changed");
-        //this.grid[leaderChange.row][leaderChange.col] = leaderChange.value;
-        gui.render(leaderChange.row, leaderChange.col, leaderChange.value);
+        this.grid[leaderChange.row][leaderChange.col] = leaderChange.value;
+        gui.render(this.grid);
         otherPlayers.ifPresent(actorRefs
                 -> actorRefs.forEach(player
                 -> player.tell(new PlayerActorContext.ChangeCellOfEveryone(leaderChange.row, leaderChange.col, leaderChange.value))));
         return Behaviors.same();
     }
-
     private Behavior<PlayerActorContext> onValueChangeForEveryone(PlayerActorContext.ChangeCellOfEveryone setCell) {
-        //this.grid[setCell.row][setCell.col] = setCell.value;
-        gui.render(setCell.row, setCell.col, setCell.value);
-        System.out.println("qualcuno ha vambiato");
+        this.grid[setCell.row][setCell.col] = setCell.value;
+        gui.render(grid);
         return Behaviors.same();
     }
-
     private Behavior<PlayerActorContext> onCellSelected(PlayerActorContext.SelectCell selectCell) {
         //System.out.println("message cell selected received");
         //System.out.println("row: " + selectCell.row + " col: " + selectCell.col);
         leader.tell(new PlayerActorContext.LeaderSelect(selectCell.row, selectCell.col));
         return Behaviors.same();
     }
-
     private Behavior<PlayerActorContext> onCellSelectedForEveryone(PlayerActorContext.SelectCellOfEveryone selectCellOfEveryone) {
         gui.cleanGUI();
         gui.selectCell(selectCellOfEveryone.row, selectCellOfEveryone.col);
