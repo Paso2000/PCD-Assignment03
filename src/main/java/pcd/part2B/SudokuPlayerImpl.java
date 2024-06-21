@@ -23,7 +23,7 @@ public class SudokuPlayerImpl implements SudokuPlayer, Serializable {
     }
 
     @Override
-    public synchronized String getId() throws RemoteException {
+    public String getId() throws RemoteException {
         return id;
     }
 

@@ -14,10 +14,8 @@ public class SudokuServerImpl implements SudokuServer {
     private final Map<String, SudokuPlayer> authors = new ConcurrentHashMap<>();
     private int gridCounter = 0;
     private int playerCounter = 0;
-    //private Set<Color> assignedColors;
 
     public SudokuServerImpl() throws RemoteException {
-        //this.assignedColors = new HashSet<>();
         UnicastRemoteObject.exportObject(this, 0);
     }
 
@@ -118,19 +116,4 @@ public class SudokuServerImpl implements SudokuServer {
             newAuthor.notifyNewAuthor(idPlayer);
         }
     }
-
-    /*
-    private Color getRandomColor() {
-        // Crea un array con tutti i colori predefiniti
-        Color[] colors = {Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GRAY,
-                Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE,
-                Color.PINK, Color.RED, Color.WHITE, Color.YELLOW};
-
-        // Crea un nuovo oggetto Random
-        Random rand = new Random();
-
-        // Seleziona un colore casuale dall'array
-        return colors[rand.nextInt(colors.length)];
-    }
-    */
 }
