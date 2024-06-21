@@ -12,7 +12,6 @@ public abstract class GamesActorContext {
     public static final class StartNewSudoku extends GamesActorContext{
         public ActorRef<PlayerActorContext> leader;
         public StartNewSudoku(ActorRef<PlayerActorContext> leader){
-            super();
             this.leader = leader;
         }
     }
@@ -22,6 +21,21 @@ public abstract class GamesActorContext {
         public JoinInGrid(ActorRef<PlayerActorContext> player, Optional<Integer> nGame){
             this.player = player;
             this.nGame = nGame;
+        }
+    }
+
+    public static final class DeletePlayer extends GamesActorContext{
+        public ActorRef<PlayerActorContext> leader;
+        public DeletePlayer(ActorRef<PlayerActorContext> leader){
+            this.leader = leader;
+        }
+    }
+
+
+    public static final class ChangeLeader extends GamesActorContext{
+        public ActorRef<PlayerActorContext> leader;
+        public ChangeLeader(ActorRef<PlayerActorContext> leader){
+            this.leader = leader;
         }
     }
 }

@@ -47,6 +47,13 @@ public class GUIGrid extends JFrame {
                 panel.add(cells[row][col]);
             }
         }
+        JButton exitButton = new JButton("Exit Game");
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exitGame();
+            }
+        });
 
         JButton solveButton = new JButton("Solve");
         solveButton.addActionListener(new ActionListener() {
@@ -58,9 +65,15 @@ public class GUIGrid extends JFrame {
 
         JPanel controlPanel = new JPanel();
         controlPanel.add(solveButton);
+        controlPanel.add(exitButton);
 
         add(panel, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
+    }
+
+    private void exitGame() {
+        player.tell(new PlayerActorContext.LeaveGame(player));
+        dispose();
     }
 
     private void solveSudoku() {

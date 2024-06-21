@@ -62,8 +62,49 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 .onMessage(PlayerActorContext.SolveSudoku.class, this::onSudokuSolved)
                 .onMessage(PlayerActorContext.NotifyNewPlayer.class, this::onNotifyNewPlayer)
                 .onMessage(PlayerActorContext.SendData.class, this::onSendData)
+                .onMessage(PlayerActorContext.LeaveGame.class, this::onLeaveGame)
+                .onMessage(PlayerActorContext.DeletePlayer.class, this::onExitPlayer)
+                .onMessage(PlayerActorContext.ChangeLeader.class, this::onExitLeader)
                 .build();
     }
+
+    private Behavior<PlayerActorContext> onExitLeader(PlayerActorContext.ChangeLeader changeLeader) {
+        otherPlayers.get().remove(changeLeader.player);
+        this.leader=changeLeader.player;
+        return Behaviors.same();
+    }
+
+    private Behavior<PlayerActorContext> onExitPlayer(PlayerActorContext.DeletePlayer deletePlayer) {
+        otherPlayers.get().remove(deletePlayer.player);
+        return Behaviors.same();
+    }
+
+    private Behavior<PlayerActorContext> onLeaveGame(PlayerActorContext.LeaveGame leaveGame) {
+        //bisogna controllare che l'utente non sia il leader
+        //se è il leader va cambiato il leader
+
+            if (!otherPlayers.isEmpty()){
+
+                if(this.leader.equals(leaveGame.player)){
+
+                    ActorRef<PlayerActorContext> newLeader = otherPlayers.get().getFirst();
+                    games.tell(new GamesActorContext.ChangeLeader(newLeader));
+                    otherPlayers.get().forEach(player -> player.tell(new PlayerActorContext.ChangeLeader(newLeader)));
+
+                    //manda un messaggio dove dici a tutti di cambiare il leader con quello che gli passo cavandolo da otherPlayers
+            }else {
+                    games.tell(new GamesActorContext.DeletePlayer(leaveGame.player));
+                    otherPlayers.get().forEach(player -> player.tell(new PlayerActorContext.DeletePlayer(leaveGame.player)));
+                    this.leader.tell(new PlayerActorContext.DeletePlayer(leaveGame.player));
+            }
+
+        }
+
+        //bisogna mandare un messaggio agli altri per toglierlo dalla lista
+        //e lo togliamo dal cluster
+        return Behaviors.same();
+    }
+
     //LEADER METHODS
     //il leader riceve onNotifyNewPlayer e manda un messaggio al nuovo player aggiornandolo
     private Behavior<PlayerActorContext> onNotifyNewPlayer(PlayerActorContext.NotifyNewPlayer notifyNewPlayer) {
@@ -131,6 +172,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         gui.selectCell(selectCellOfEveryone.row, selectCellOfEveryone.col);
         return Behaviors.same();
     }
+
 
 }
 

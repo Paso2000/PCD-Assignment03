@@ -90,4 +90,25 @@ public abstract class PlayerActorContext {
             this.otherPlayers = otherPlayers;
         }
     }
+
+    public static final class LeaveGame extends PlayerActorContext{
+        public ActorRef<PlayerActorContext> player;
+        public LeaveGame(ActorRef<PlayerActorContext> player){
+            this.player = player;
+        }
+    }
+
+    public static final class ChangeLeader extends PlayerActorContext{
+        public ActorRef<PlayerActorContext> player;
+        public ChangeLeader(ActorRef<PlayerActorContext> player){
+            this.player = player;
+        }
+    }
+
+    public static final class DeletePlayer extends PlayerActorContext{
+        public ActorRef<PlayerActorContext> player;
+        public DeletePlayer(ActorRef<PlayerActorContext> player){
+            this.player = player;
+        }
+    }
 }
