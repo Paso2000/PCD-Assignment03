@@ -38,7 +38,17 @@ public class GamesActor extends AbstractBehavior<GamesActorContext> {
         return newReceiveBuilder()
                 .onMessage(GamesActorContext.StartNewSudoku.class, this::onStartNewGame)
                 .onMessage(GamesActorContext.JoinInGrid.class, this::onJoinInGrid)
+                .onMessage(GamesActorContext.DeletePlayer.class, this::onDeletePlayer)
+                .onMessage(GamesActorContext.ChangeLeader.class, this::onChangeLeader)
                 .build();
+    }
+
+    private Behavior<GamesActorContext> onChangeLeader(GamesActorContext.ChangeLeader changeLeader) {
+        return Behaviors.same();
+    }
+
+    private Behavior<GamesActorContext> onDeletePlayer(GamesActorContext.DeletePlayer deletePlayer) {
+        return Behaviors.same();
     }
 
     private Behavior<GamesActorContext> onJoinInGrid(GamesActorContext.JoinInGrid joinInGrid) {
@@ -46,7 +56,7 @@ public class GamesActor extends AbstractBehavior<GamesActorContext> {
         games.get(joinInGrid.nGame.get()).second().add(joinInGrid.player);
         //System.out.println(games);
         //manda un messaggio al leader, con il riferimento del player
-        games.get(joinInGrid.nGame.get()).first().tell(new PlayerActorContext.NotifyNewPlayer(joinInGrid.player));
+        games.get(joinInGrid.nGame.get()).first().tell(new PlayerActorContext.NotifyNewPlayer(joinInGrid.player,gamesNumber));
         return Behaviors.same();
     }
 

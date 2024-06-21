@@ -7,6 +7,7 @@ import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import akka.actor.typed.receptionist.Receptionist;
+import jnr.ffi.annotations.In;
 import pcd.part2A.GUI.GUIGrid;
 import pcd.part2A.messages.GamesActorContext;
 import pcd.part2A.messages.PlayerActorContext;
@@ -27,6 +28,8 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
 
     private ActorRef<Receptionist.Listing> messageAdapter;
     private ActorRef<GamesActorContext> games;
+
+    private Optional<Integer> nGame;
 
     public PlayerActor(ActorContext<PlayerActorContext> context, Boolean isLeader, ActorRef<GamesActorContext> games, Optional<Integer> nGame) {
         super(context);
@@ -83,7 +86,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         //bisogna controllare che l'utente non sia il leader
         //se è il leader va cambiato il leader
 
-            if (!otherPlayers.isEmpty()){
+            if (!otherPlayers.get().isEmpty()){
 
                 if(this.leader.equals(leaveGame.player)){
 

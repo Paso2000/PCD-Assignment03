@@ -77,8 +77,11 @@ public abstract class PlayerActorContext {
     }
     public static final class NotifyNewPlayer extends PlayerActorContext{
         public ActorRef<PlayerActorContext> newPlayer;
-        public NotifyNewPlayer(ActorRef<PlayerActorContext> newPlayer){
+        public int nGames;
+
+        public NotifyNewPlayer(ActorRef<PlayerActorContext> newPlayer, int nGames){
             this.newPlayer = newPlayer;
+            this.nGames=nGames;
         }
     }
     public static final class SendData extends PlayerActorContext{
