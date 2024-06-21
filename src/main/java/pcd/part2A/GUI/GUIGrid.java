@@ -5,12 +5,9 @@ import pcd.part2A.messages.PlayerActorContext;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
 public class GUIGrid extends JFrame {
     private static final int GRID_SIZE = 9;
@@ -31,7 +28,7 @@ public class GUIGrid extends JFrame {
     }
     private void initUI() {
         setTitle("Cooperative Sudoku");
-        setSize(600, 600);
+        setSize(300, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel(new GridLayout(GRID_SIZE, GRID_SIZE));
@@ -39,10 +36,25 @@ public class GUIGrid extends JFrame {
 
         for (int row = 0; row < GRID_SIZE; row++) {
             for (int col = 0; col < GRID_SIZE; col++) {
-                cells[row][col] = new JTextField();
+                JTextField textField = new JTextField();
+                cells[row][col] = textField;
                 cells[row][col].setHorizontalAlignment(JTextField.CENTER);
                 cells[row][col].setFont(font);
-                cells[row][col].getDocument().addDocumentListener(new CellDocumentListener(row, col));
+                int finalRow = row;
+                int finalCol = col;
+                textField.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        System.out.println("Evento di de-click su cella rilevato");
+                        String text = textField.getText();
+                        if (text.isEmpty()) {
+                            System.out.println("Numero eliminato");
+                            //grid.deleteValue(row, column);
+                        } else {
+                            System.out.println("Numero inserito/modificato");
+                            player.tell(new PlayerActorContext.ChangeCell(finalRow, finalCol, Integer.parseInt(textField.getText())));
+                        }
+                    }
+                });
                 cells[row][col].addFocusListener(new CellFocusListener(row, col));
                 panel.add(cells[row][col]);
             }
@@ -86,8 +98,9 @@ public class GUIGrid extends JFrame {
     public void render(int[][] grid) {
         for (int row = 0; row < GRID_SIZE; row++) {
             for (int col = 0; col < GRID_SIZE; col++) {
-                if (Integer.parseInt(cells[row][col].getText()) != grid[row][col]) {
-                    cells[row][col].setText(String.valueOf(grid[row][col]));
+                int value = grid[row][col];
+                if (value != 0) {
+                    cells[row][col].setText(String.valueOf(value));
                 }
             }
         }
@@ -98,7 +111,7 @@ public class GUIGrid extends JFrame {
         }
     }
 
-    private class CellDocumentListener implements DocumentListener {
+    /*private class CellDocumentListener implements DocumentListener {
         private int row, col;
 
         public CellDocumentListener(int row, int col) {
@@ -121,8 +134,9 @@ public class GUIGrid extends JFrame {
         public void changedUpdate(DocumentEvent e) {
             //Chiamato quando viene cambiato un attributo del documento
         }
-    }
+    }*/
 
+   //per focus
     private class CellFocusListener implements FocusListener {
         private int row, col;
 

@@ -87,10 +87,12 @@ public abstract class PlayerActorContext {
     public static final class SendData extends PlayerActorContext{
         public ActorRef<PlayerActorContext> leader;
         public Optional<List<ActorRef<PlayerActorContext>>> otherPlayers;
-        public SendData(ActorRef<PlayerActorContext> leader, Optional<List<ActorRef<PlayerActorContext>>> otherPlayers) {
+        public int[][] grid;
+        public SendData(ActorRef<PlayerActorContext> leader, Optional<List<ActorRef<PlayerActorContext>>> otherPlayers, int[][] grid) {
             super();
             this.leader = leader;
             this.otherPlayers = otherPlayers;
+            this.grid = grid;
         }
     }
 
