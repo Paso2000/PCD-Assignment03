@@ -17,4 +17,6 @@ public interface SudokuServer extends Remote {
     Set<String> getGrids() throws RemoteException;
 
     void updatePlayers(Grid grid) throws RemoteException;
+
+    void notifyPlayerExited(String idGrid, String idPlayer) throws RemoteException;
 }

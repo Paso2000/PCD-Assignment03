@@ -9,7 +9,9 @@ public interface SudokuPlayer extends Remote {
 
     Grid getGrid() throws RemoteException;
 
-    boolean isAuthor() throws RemoteException;
-
     void updateGrid(Grid grid) throws RemoteException;
+
+    void notifyPlayerEntered(String idPlayer) throws RemoteException;
+
+    void notifyPlayerExited(String idPlayer) throws RemoteException;
 }

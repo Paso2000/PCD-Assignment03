@@ -10,7 +10,6 @@ public class PlayerLauncher {
 
     public static void main(String[] args) {
         try {
-
             // Ottiene il registro RMI
             Registry registry = LocateRegistry.getRegistry();
 

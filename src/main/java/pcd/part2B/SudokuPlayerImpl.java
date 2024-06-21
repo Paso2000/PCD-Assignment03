@@ -13,15 +13,12 @@ public class SudokuPlayerImpl implements SudokuPlayer, Serializable {
 
     Grid grid;
 
-    boolean isAuthor;
-
     SudokuGUI gui;
 
-    SudokuPlayerImpl(String id, Grid grid, boolean isAuthor, SudokuServer server) throws RemoteException {
+    SudokuPlayerImpl(String id, Grid grid) throws RemoteException {
         this.id = id;
         this.grid = grid;
-        this.isAuthor = isAuthor;
-        this.gui = new SudokuGUI(grid, server);
+        this.gui = new SudokuGUI(this);
         UnicastRemoteObject.exportObject(this, 0);
     }
 
@@ -36,12 +33,16 @@ public class SudokuPlayerImpl implements SudokuPlayer, Serializable {
     }
 
     @Override
-    public synchronized boolean isAuthor() throws RemoteException {
-        return isAuthor;
+    public synchronized void updateGrid(Grid grid) throws RemoteException {
+        this.gui.updateGrid(grid);
+    }
+    @Override
+    public void notifyPlayerEntered(String idPlayer) throws RemoteException {
+        this.gui.notifyPlayerEntered(idPlayer);
     }
 
     @Override
-    public synchronized void updateGrid(Grid grid) throws RemoteException {
-        this.gui.updateGrid(grid);
+    public void notifyPlayerExited(String idPlayer) throws RemoteException {
+        this.gui.notifyPlayerExited(idPlayer);
     }
 }
