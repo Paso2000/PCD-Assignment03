@@ -14,4 +14,6 @@ public interface SudokuPlayer extends Remote {
     void notifyPlayerEntered(String idPlayer) throws RemoteException;
 
     void notifyPlayerExited(String idPlayer) throws RemoteException;
+
+    void notifyNewAuthor(String idPlayer) throws RemoteException;
 }

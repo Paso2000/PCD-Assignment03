@@ -34,8 +34,10 @@ public class SudokuPlayerImpl implements SudokuPlayer, Serializable {
 
     @Override
     public synchronized void updateGrid(Grid grid) throws RemoteException {
+        this.grid = grid;
         this.gui.updateGrid(grid);
     }
+
     @Override
     public void notifyPlayerEntered(String idPlayer) throws RemoteException {
         this.gui.notifyPlayerEntered(idPlayer);
@@ -44,5 +46,10 @@ public class SudokuPlayerImpl implements SudokuPlayer, Serializable {
     @Override
     public void notifyPlayerExited(String idPlayer) throws RemoteException {
         this.gui.notifyPlayerExited(idPlayer);
+    }
+
+    @Override
+    public void notifyNewAuthor(String idPlayer) throws RemoteException {
+        this.gui.notifyNewAuthor(idPlayer);
     }
 }

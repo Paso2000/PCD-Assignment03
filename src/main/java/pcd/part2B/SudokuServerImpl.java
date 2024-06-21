@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SudokuServerImpl implements SudokuServer {
     private final Map<String, List<SudokuPlayer>> players = new ConcurrentHashMap<>();
+    private final Map<String, SudokuPlayer> authors = new ConcurrentHashMap<>();
     private int gridCounter = 0;
     private int playerCounter = 0;
     //private Set<Color> assignedColors;
@@ -21,7 +22,7 @@ public class SudokuServerImpl implements SudokuServer {
     }
 
     @Override
-    public synchronized void createPlayer() throws RemoteException {
+    public synchronized void createGrid() throws RemoteException {
         String idGrid = "grid-" + gridCounter++;
         Grid grid = new Grid(idGrid);
         // Crea ed esporta il player
@@ -29,9 +30,10 @@ public class SudokuServerImpl implements SudokuServer {
         SudokuPlayer player = new SudokuPlayerImpl(idPlayer, grid);
         // Ottiene il registro RMI
         Registry registry = LocateRegistry.getRegistry();
-        // Registra il server
+        // Registra il player con la chiave della griglia
         registry.rebind(idGrid, player);
         players.put(idGrid, new ArrayList<>(List.of(player)));
+        authors.put(idGrid, player);
     }
 
     @Override
@@ -75,6 +77,7 @@ public class SudokuServerImpl implements SudokuServer {
 
     @Override
     public synchronized void notifyPlayerExited(String idGrid, String idPlayer) throws RemoteException {
+        // Rimuove il player dai player della partita
         List<SudokuPlayer> currentPlayers = this.players.get(idGrid);
         Optional<SudokuPlayer> player = currentPlayers.stream().filter(p -> {
             try {
@@ -85,6 +88,9 @@ public class SudokuServerImpl implements SudokuServer {
         }).findFirst();
         player.ifPresent(currentPlayers::remove);
         this.players.put(idGrid, currentPlayers);
+        this.playerCounter--;
+
+        // Notifica l'uscita del player dalla partita a ogni giocatore della partita stessa
         currentPlayers.forEach(p -> {
             try {
                 p.notifyPlayerExited(idPlayer);
@@ -92,10 +98,24 @@ public class SudokuServerImpl implements SudokuServer {
                 throw new RuntimeException(e);
             }
         });
-        this.playerCounter--;
+
+        // Nel caso in cui il giocatore uscito dalla griglia sia l'ultimo giocatore rimasto a partecipare cancello la partita
         if (this.players.get(idGrid).isEmpty()) {
             this.players.remove(idGrid);
             this.gridCounter--;
+        }
+        // Altrimenti, se il player uscente era l'autore della griglia va eletto un nuovo player della stessa partita come autore
+        // E va rimpiazzato nel registro il vecchio Player autore col nuovo
+        else if (authors.get(idGrid).getId().equals(idPlayer)) {
+            Random rand = new Random();
+            SudokuPlayer newAuthor = currentPlayers.get(rand.nextInt(currentPlayers.size()));
+            this.authors.put(idGrid, newAuthor);
+            // Ottiene il registro RMI
+            Registry registry = LocateRegistry.getRegistry();
+            // Rimpiazza sul registro il player author utilizzando la chiave della griglia
+            registry.rebind(idGrid, newAuthor);
+            // Notifica solo al nuovo player che è il nuovo author
+            newAuthor.notifyNewAuthor(idPlayer);
         }
     }
 

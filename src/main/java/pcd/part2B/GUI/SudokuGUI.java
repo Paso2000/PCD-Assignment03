@@ -186,11 +186,15 @@ public class SudokuGUI extends JFrame {
         console.append(message + "\n");
     }
 
-    public void notifyPlayerEntered(String idNewEntered) {
-        appendToConsole("New gamer " + idNewEntered + " joins the game! :)");
+    public void notifyPlayerEntered(String idPlayer) {
+        appendToConsole("New gamer " + idPlayer + " joins the game! :)");
     }
 
-    public void notifyPlayerExited(String idNewEntered) {
-        appendToConsole("Gamer " + idNewEntered + " exited from the game :(");
+    public void notifyPlayerExited(String idPlayer) {
+        appendToConsole("Gamer " + idPlayer + " exited from the game :(");
+    }
+
+    public void notifyNewAuthor(String idPlayer) {
+        appendToConsole("Gamer author " + idPlayer + " exited, you're the new author!!! :D");
     }
 }

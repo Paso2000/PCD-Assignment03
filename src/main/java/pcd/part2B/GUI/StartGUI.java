@@ -1,16 +1,11 @@
 package pcd.part2B.GUI;
 
-import pcd.part2B.Grid;
 import pcd.part2B.SudokuServer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.util.Map;
 import java.util.Set;
 
 public class StartGUI extends JFrame {
@@ -22,7 +17,7 @@ public class StartGUI extends JFrame {
         createGridButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    server.createPlayer();
+                    server.createGrid();
                     System.out.println("Client launched, new grid created.");
                     dispose();
                 } catch (RemoteException ex) {
