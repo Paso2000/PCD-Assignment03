@@ -11,9 +11,18 @@ import java.util.Optional;
  * with list of message that receive
  */
 public abstract class PlayerActorContext {
-    public static final class SolveSudoku extends PlayerActorContext {
-        //add campi
-        //add construttore
+    public static final class SolveSudoku extends PlayerActorContext {}
+    public static final class LeaderSolve extends PlayerActorContext{
+        public int[][] solvedGrid;
+        public LeaderSolve(int[][] solvedGrid){
+            this.solvedGrid = solvedGrid;
+        }
+    }
+    public static final class SolveOfEveryone extends PlayerActorContext{
+        public int[][] solvedGrid;
+        public SolveOfEveryone(int[][] solvedGrid){
+            this.solvedGrid = solvedGrid;
+        }
     }
     public static final class SelectCell extends PlayerActorContext{
         public int row;
@@ -95,21 +104,18 @@ public abstract class PlayerActorContext {
             this.grid = grid;
         }
     }
-
     public static final class LeaveGame extends PlayerActorContext{
         public ActorRef<PlayerActorContext> player;
         public LeaveGame(ActorRef<PlayerActorContext> player){
             this.player = player;
         }
     }
-
     public static final class ChangeLeader extends PlayerActorContext{
         public ActorRef<PlayerActorContext> player;
         public ChangeLeader(ActorRef<PlayerActorContext> player){
             this.player = player;
         }
     }
-
     public static final class DeletePlayer extends PlayerActorContext{
         public ActorRef<PlayerActorContext> player;
         public DeletePlayer(ActorRef<PlayerActorContext> player){

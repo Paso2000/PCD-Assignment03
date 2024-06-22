@@ -89,10 +89,8 @@ public class GUIGrid extends JFrame {
     }
 
     private void solveSudoku() {
-        // TODO
-        //test messages
         player.tell(new PlayerActorContext.SolveSudoku());
-        System.out.println("solve sudoku");
+        //System.out.println("solve sudoku");
     }
 
     public void render(int[][] grid) {

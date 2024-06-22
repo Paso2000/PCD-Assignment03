@@ -59,6 +59,8 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 .onMessage(PlayerActorContext.LeaderChange.class, this::onLeaderChange)
                 .onMessage(PlayerActorContext.ChangeCellOfEveryone.class, this::onValueChangeForEveryone)
                 .onMessage(PlayerActorContext.SolveSudoku.class, this::onSudokuSolved)
+                .onMessage(PlayerActorContext.LeaderSolve.class, this::onLeaderSolve)
+                .onMessage(PlayerActorContext.SolveOfEveryone.class, this::onSolveOfEveryone)
                 .onMessage(PlayerActorContext.NotifyNewPlayer.class, this::onNotifyNewPlayer)
                 .onMessage(PlayerActorContext.SendData.class, this::onSendData)
                 .onMessage(PlayerActorContext.LeaveGame.class, this::onLeaveGame)
@@ -66,13 +68,12 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 .onMessage(PlayerActorContext.ChangeLeader.class, this::onExitLeader)
                 .build();
     }
-
     private void notifyGamesActor(ActorContext<PlayerActorContext> context, Boolean isLeader, Optional<Integer> nGame) {
         if (this.isLeader) {
             this.grid = SudokuGenerator.generateSudoku();
             gui.render(grid);
             this.leader = context.getSelf();
-            this.games.tell(new GamesActorContext.StartNewSudoku(context.getSelf()));
+            this.games.tell(new GamesActorContext.StartNewSudoku(context.getSelf(), this.nGame));
         } else {
             this.games.tell(new GamesActorContext.JoinInGrid(context.getSelf(), nGame));
         }
@@ -132,19 +133,33 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         return Behaviors.same();
     }
     private Behavior<PlayerActorContext> onSudokuSolved(PlayerActorContext.SolveSudoku solveSudoku) {
-        System.out.println("message solve received");
+        int[][] solvedGrid = SudokuGenerator.solveSudoku(this.grid);
+        gui.render(solvedGrid);
+        leader.tell(new PlayerActorContext.LeaderSolve(solvedGrid));
+        return Behaviors.same();
+    }
+    private Behavior<PlayerActorContext> onLeaderSolve(PlayerActorContext.LeaderSolve leaderSolve) {
+        this.grid = leaderSolve.solvedGrid;
+        gui.render(this.grid);
+        otherPlayers.ifPresent(actorRefs
+                -> actorRefs.forEach(player
+                -> player.tell(new PlayerActorContext.SolveOfEveryone(leaderSolve.solvedGrid))));
+        return Behaviors.same();
+    }
+    private Behavior<PlayerActorContext> onSolveOfEveryone(PlayerActorContext.SolveOfEveryone solveOfEveryone) {
+        this.grid = solveOfEveryone.solvedGrid;
+        gui.render(this.grid);
         return Behaviors.same();
     }
     private Behavior<PlayerActorContext> onValueChanged(PlayerActorContext.ChangeCell changeCell) {
-        System.out.println("message value change received: ");
-        System.out.println("row: " + changeCell.row +
-                " col: " + changeCell.col + " value: " + changeCell.value);
+        //System.out.println("message value change received: ");
+        //System.out.println("row: " + changeCell.row +" col: " + changeCell.col + " value: " + changeCell.value);
         this.grid[changeCell.row][changeCell.col] = changeCell.value;
         leader.tell(new PlayerActorContext.LeaderChange(changeCell.row, changeCell.col, changeCell.value));
         return Behaviors.same();
     }
     private synchronized Behavior<PlayerActorContext> onLeaderChange(PlayerActorContext.LeaderChange leaderChange) {
-        System.out.println("leader received message value changed");
+        //System.out.println("leader received message value changed");
         this.grid[leaderChange.row][leaderChange.col] = leaderChange.value;
         gui.render(this.grid);
         otherPlayers.ifPresent(actorRefs

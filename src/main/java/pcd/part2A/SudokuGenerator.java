@@ -9,8 +9,40 @@ public class SudokuGenerator {
     public static int[][] generateSudoku() {
         int[][] grid = new int[SIZE][SIZE];
         fillGrid(grid);
-        removeNumbers(grid, 60); // Rimuove circa 40 numeri per creare il puzzle
+        removeNumbers(grid, 60); // Rimuove circa 60 numeri
         return grid;
+    }
+    public static int[][] solveSudoku(int[][] currentGrid){
+        int[][] grid = new int[9][9];
+        // Copia il contenuto della griglia in grid
+        for (int i = 0; i < 9; i++) {
+            System.arraycopy(currentGrid[i], 0, grid[i], 0, 9);
+        }
+        if (solve(grid)) {
+            return grid; // Restituisce la griglia risolta
+        } else {
+            throw new IllegalArgumentException("La griglia fornita non può essere risolta");
+        }
+    }
+
+    private static boolean solve(int[][] grid) {
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                if (grid[row][col] == 0) { // Trova una cella vuota
+                    for (int num = 1; num <= 9; num++) {
+                        if (isSafe(grid, row, col, num)) {
+                            grid[row][col] = num; // Prova con il numero corrente
+                            if (solve(grid)) { // Ricorsione
+                                return true;
+                            }
+                            grid[row][col] = 0; // Reset cella
+                        }
+                    }
+                    return false; // Nessun numero valido trovato
+                }
+            }
+        }
+        return true; // Griglia completata
     }
 
     private static boolean fillGrid(int[][] grid) {
@@ -69,7 +101,6 @@ public class SudokuGenerator {
             }
         }
     }
-
 
 }
 
