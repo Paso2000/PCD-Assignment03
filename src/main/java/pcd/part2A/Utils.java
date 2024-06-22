@@ -13,10 +13,7 @@ import pcd.part2A.Actors.PlayerActor;
 import pcd.part2A.messages.GamesActorContext;
 import scala.Int;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class Utils {
     public static void startup(String role, int port, Optional<Integer> nGame) {
