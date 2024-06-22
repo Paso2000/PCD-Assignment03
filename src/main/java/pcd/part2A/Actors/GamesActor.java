@@ -44,10 +44,14 @@ public class GamesActor extends AbstractBehavior<GamesActorContext> {
     }
 
     private Behavior<GamesActorContext> onChangeLeader(GamesActorContext.ChangeLeader changeLeader) {
+        games.get(changeLeader.nGames).second().remove(changeLeader.player);
+        games.put(changeLeader.nGames, new Pair<>(changeLeader.leader,games.get(changeLeader.nGames).second()));
+
         return Behaviors.same();
     }
 
     private Behavior<GamesActorContext> onDeletePlayer(GamesActorContext.DeletePlayer deletePlayer) {
+        games.get(deletePlayer.nGames).second().remove(deletePlayer.playerToDelete);
         return Behaviors.same();
     }
 
