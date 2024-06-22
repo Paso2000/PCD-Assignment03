@@ -17,6 +17,7 @@ public class App extends JFrame {
     private JButton joinGameButton;
     private JLabel labelJoinID;
     private static JComboBox fieldJoinID;
+    private static int nGame  = 0;
 
     public App() {
         setTitle("Cooperative Sudoku");
@@ -58,7 +59,8 @@ public class App extends JFrame {
         public void actionPerformed(ActionEvent e) {
             String command = e.getActionCommand();
             if (command.equals("New Game")) {
-                startup("playerNewGame", 0, Optional.empty());
+                nGame++;
+                startup("playerNewGame", 0, Optional.of(nGame));
 
             } else if (command.equals("Enter in a game")) {
                 //passo il valore della comboBox con la partita a cui voglio partecipare

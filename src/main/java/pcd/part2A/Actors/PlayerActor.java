@@ -37,6 +37,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         gui = new GUIGrid(context.getSelf());
         gui.setVisible(true);
         notifyGamesActor(context,isLeader,nGame);
+        this.nGame=nGame;
     }
 
     private void notifyGamesActor(ActorContext<PlayerActorContext> context, Boolean isLeader, Optional<Integer> nGame) {
@@ -94,12 +95,12 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 if(this.leader.equals(leaveGame.player)){
 
                     ActorRef<PlayerActorContext> newLeader = otherPlayers.get().getFirst();
-                    games.tell(new GamesActorContext.ChangeLeader(newLeader));
+                    games.tell(new GamesActorContext.ChangeLeader(newLeader,leaveGame.player,nGame.get()));
                     otherPlayers.get().forEach(player -> player.tell(new PlayerActorContext.ChangeLeader(newLeader)));
 
                     //manda un messaggio dove dici a tutti di cambiare il leader con quello che gli passo cavandolo da otherPlayers
             }else {
-                    games.tell(new GamesActorContext.DeletePlayer(leaveGame.player));
+                    games.tell(new GamesActorContext.DeletePlayer(leaveGame.player,nGame.get()));
                     otherPlayers.get().forEach(player -> player.tell(new PlayerActorContext.DeletePlayer(leaveGame.player)));
                     this.leader.tell(new PlayerActorContext.DeletePlayer(leaveGame.player));
             }

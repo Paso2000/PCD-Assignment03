@@ -1,6 +1,7 @@
 package pcd.part2A.messages;
 
 import akka.actor.typed.ActorRef;
+import jnr.ffi.annotations.In;
 
 import java.util.Optional;
 
@@ -25,17 +26,28 @@ public abstract class GamesActorContext {
     }
 
     public static final class DeletePlayer extends GamesActorContext{
-        public ActorRef<PlayerActorContext> leader;
-        public DeletePlayer(ActorRef<PlayerActorContext> leader){
-            this.leader = leader;
+
+        public ActorRef<PlayerActorContext> playerToDelete;
+
+        public Integer nGames;
+
+
+        public DeletePlayer(ActorRef<PlayerActorContext> playerToDelete, Integer nGames){
+            this.playerToDelete=playerToDelete;
+            this.nGames=nGames;
         }
     }
 
 
     public static final class ChangeLeader extends GamesActorContext{
         public ActorRef<PlayerActorContext> leader;
-        public ChangeLeader(ActorRef<PlayerActorContext> leader){
+        public ActorRef<PlayerActorContext> player;
+
+        public Integer nGames;
+        public ChangeLeader(ActorRef<PlayerActorContext> leader, ActorRef<PlayerActorContext> player, Integer nGames){
             this.leader = leader;
+            this.player=player;
+            this.nGames=nGames;
         }
     }
 }
