@@ -2,12 +2,10 @@ package pcd.part2B;
 
 import pcd.part2B.GUI.SudokuGUI;
 
-import java.io.Serializable;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class SudokuPlayerImpl implements SudokuPlayer, Serializable {
+public class SudokuPlayerImpl implements SudokuPlayer {
 
     String id;
 
@@ -18,13 +16,18 @@ public class SudokuPlayerImpl implements SudokuPlayer, Serializable {
     SudokuPlayerImpl(String id, Grid grid) throws RemoteException {
         this.id = id;
         this.grid = grid;
-        this.gui = new SudokuGUI(this);
+        this.gui = new SudokuGUI(id);
         UnicastRemoteObject.exportObject(this, 0);
     }
 
     @Override
     public String getId() throws RemoteException {
         return id;
+    }
+
+    @Override
+    public void startGUI() throws RemoteException {
+        this.gui.startGUI();
     }
 
     @Override
@@ -51,5 +54,15 @@ public class SudokuPlayerImpl implements SudokuPlayer, Serializable {
     @Override
     public void notifyNewAuthor(String idPlayer) throws RemoteException {
         this.gui.notifyNewAuthor(idPlayer);
+    }
+
+    @Override
+    public void notifyGameOver(String idPlayer) throws RemoteException {
+        this.gui.notifyGameOver(idPlayer);
+    }
+
+    @Override
+    public void notifyCheckSudokuNotCorrect(String idPlayer) throws RemoteException {
+        this.gui.notifyCheckSudokuNotCorrect(idPlayer);
     }
 }

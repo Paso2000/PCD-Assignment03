@@ -7,6 +7,8 @@ public interface SudokuPlayer extends Remote {
 
     String getId() throws RemoteException;
 
+    void startGUI() throws RemoteException;
+
     Grid getGrid() throws RemoteException;
 
     void updateGrid(Grid grid) throws RemoteException;
@@ -16,4 +18,8 @@ public interface SudokuPlayer extends Remote {
     void notifyPlayerExited(String idPlayer) throws RemoteException;
 
     void notifyNewAuthor(String idPlayer) throws RemoteException;
+
+    void notifyGameOver(String idPlayer) throws RemoteException;
+
+    void notifyCheckSudokuNotCorrect(String idPlayer) throws RemoteException;
 }

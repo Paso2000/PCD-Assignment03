@@ -1,118 +1,92 @@
 package pcd.part2B;
-import java.util.*;
+
+import java.util.Random;
 
 public class SudokuGenerator {
-    private int[][] board;
     private static final int SIZE = 9;
+    private static final Random RANDOM = new Random();
 
-    public SudokuGenerator() {
-        board = new int[SIZE][SIZE];
+    public static int[][] generateSudoku() {
+        int[][] grid = new int[SIZE][SIZE];
+        fillGrid(grid);
+        removeNumbers(grid, 60); // Rimuove circa 40 numeri per creare il puzzle
+        return grid;
     }
 
-    public boolean generateBoard() {
-        fillDiagonalRegions();
-
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                if (board[i][j] == 0) {
-                    ArrayList<Integer> numbers = new ArrayList<>();
-                    for (int num = 1; num <= SIZE; num++) {
-                        if (isSafe(i, j, num)) {
-                            numbers.add(num);
-                        }
-                    }
-                    Collections.shuffle(numbers);
+    private static boolean fillGrid(int[][] grid) {
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                if (grid[row][col] == 0) {
+                    int[] numbers = generateRandomNumbers();
                     for (int num : numbers) {
-                        if (isSafe(i, j, num)) {
-                            board[i][j] = num;
-                            if (generateBoard()) {
+                        if (isSafe(grid, row, col, num)) {
+                            grid[row][col] = num;
+                            if (fillGrid(grid)) {
                                 return true;
-                            } else {
-                                board[i][j] = 0;
                             }
+                            grid[row][col] = 0;
                         }
                     }
                     return false;
                 }
             }
         }
-        removeElements(20);
         return true;
     }
 
-    private void fillDiagonalRegions() {
-        for (int i = 0; i < SIZE; i = i + 3) {
-            fillBox(i, i);
-        }
-    }
-
-    private void fillBox(int row, int col) {
-        int num;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                do {
-                    num = randomGenerator(SIZE);
-                }
-                while (!isSafe(row, col, num));
-                board[row + i][col + j] = num;
-            }
-        }
-    }
-
-    private int randomGenerator(int num) {
-        return (int) Math.floor((Math.random() * num + 1));
-    }
-
-    private boolean isSafe(int row, int col, int num) {
-        return (unUsedInRow(row, num) &&
-                unUsedInCol(col, num) &&
-                unUsedInBox(row - row % 3, col - col % 3, num));
-    }
-
-    private boolean unUsedInRow(int i, int num) {
-        for (int j = 0; j < SIZE; j++) {
-            if (board[i][j] == num) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean unUsedInCol(int j, int num) {
+    private static int[] generateRandomNumbers() {
+        int[] numbers = new int[SIZE];
         for (int i = 0; i < SIZE; i++) {
-            if (board[i][j] == num) {
+            numbers[i] = i + 1;
+        }
+        for (int i = SIZE - 1; i > 0; i--) {
+            int j = RANDOM.nextInt(i + 1);
+            int temp = numbers[i];
+            numbers[i] = numbers[j];
+            numbers[j] = temp;
+        }
+        return numbers;
+    }
+
+    private static boolean isSafe(int[][] grid, int row, int col, int num) {
+        for (int x = 0; x < SIZE; x++) {
+            if (grid[row][x] == num || grid[x][col] == num ||
+                    grid[row - row % 3 + x / 3][col - col % 3 + x % 3] == num) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean unUsedInBox(int rowStart, int colStart, int num) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (board[rowStart + i][colStart + j] == num) {
+    private static void removeNumbers(int[][] grid, int count) {
+        int removed = 0;
+        while (removed < count) {
+            int row = new Random().nextInt(SIZE);
+            int col = new Random().nextInt(SIZE);
+            if (grid[row][col] != 0) {
+                grid[row][col] = 0;
+                removed++;
+            }
+        }
+    }
+
+    public static boolean isSudokuValid(int[][] grid) {
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                int num = grid[row][col];
+                if (num != 0) {
+                    grid[row][col] = 0;
+                    if (!isSafe(grid, row, col, num)) {
+                        // Ripristina il numero nella cella
+                        grid[row][col] = num;
+                        return false;
+                    }
+                    grid[row][col] = num;
+                } else {
                     return false;
                 }
             }
         }
         return true;
-    }
-
-    private void removeElements(int num) {
-        int count = 0;
-        while (count < num) {
-            int cellId = randomGenerator(SIZE * SIZE);
-
-            int i = (cellId / SIZE);
-            int j = cellId % 9;
-            if (j != 0) {
-                j = j - 1;
-            }
-
-            if (board[i][j] != 0) {
-                count++;
-                board[i][j] = 0;
-            }
-        }
     }
 }

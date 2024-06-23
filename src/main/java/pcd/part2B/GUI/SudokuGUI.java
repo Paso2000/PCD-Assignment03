@@ -1,13 +1,11 @@
 package pcd.part2B.GUI;
 
-import akka.japi.Pair;
 import pcd.part2B.Grid;
+import pcd.part2B.SudokuGenerator;
 import pcd.part2B.SudokuPlayer;
 import pcd.part2B.SudokuServer;
 
 import javax.swing.*;
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.rmi.NotBoundException;
@@ -19,29 +17,39 @@ public class SudokuGUI extends JFrame {
 
     private static final int GRID_SIZE = 9;
     private static final int SUB_GRID_SIZE = 3;
-    private JTextField[][] cells = new JTextField[GRID_SIZE][GRID_SIZE];
+    private final JTextField[][] cells;
     private JTextArea console;
-    private JButton checkButton, exitButton;
-    private JPanel mainPanel, gridPanel, consolePanel, buttonPanel;
-
+    private JButton checkButton;
+    String idPlayer;
+    Grid startingGrid;
     Grid grid = null;
 
-    public SudokuGUI(SudokuPlayer player) {
+    public SudokuGUI(String idPlayer) {
+        this.idPlayer = idPlayer;
+        this.cells = new JTextField[GRID_SIZE][GRID_SIZE];
+    }
+
+    public void startGUI() {
         try {
             // Ottiene il registro RMI
             Registry registry = LocateRegistry.getRegistry();
 
             // Ottiene il server
             SudokuServer server = (SudokuServer) registry.lookup(SudokuServer.SERVER_NAME);
+
+            // Ottiene il player
+            SudokuPlayer player = (SudokuPlayer) registry.lookup(idPlayer);
+
             grid = player.getGrid();
+            String idGrid = grid.getId();
 
-            this.setTitle("Playing on grid with id " + grid.getId());
+            this.setTitle("Cooperative Sudoku - " + player.getId() + " on " + idGrid);
 
-            mainPanel = new JPanel();
+            JPanel mainPanel = new JPanel();
             mainPanel.setLayout(new BorderLayout());
 
             // Sudoku Grid
-            gridPanel = new JPanel();
+            JPanel gridPanel = new JPanel();
             gridPanel.setLayout(new GridLayout(SUB_GRID_SIZE, SUB_GRID_SIZE));
             for (int block = 0; block < GRID_SIZE; block++) {
                 JPanel subGrid = new JPanel();
@@ -57,6 +65,11 @@ public class SudokuGUI extends JFrame {
 
                     if (grid.getValue(row, column) >= 1 && grid.getValue(row, column) <= 9) {
                         textField.setText(String.valueOf(grid.getValue(row, column)));
+                        if (grid.isInitial(row, column)) {
+                            textField.setEditable(false); // Disabilita la cella
+                            textField.setBackground(Color.GRAY); // Cambia lo sfondo della cella
+                            textField.setForeground(Color.WHITE);
+                        }
                     }
 
                     // Rileva l'evento di click
@@ -103,28 +116,36 @@ public class SudokuGUI extends JFrame {
             }
 
             // Console
-            consolePanel = new JPanel();
+            JPanel consolePanel = new JPanel();
             consolePanel.setLayout(new BorderLayout());
             console = new JTextArea();
             console.setEditable(false);
             consolePanel.add(new JScrollPane(console), BorderLayout.CENTER);
 
             // Buttons
-            buttonPanel = new JPanel();
+            JPanel buttonPanel = new JPanel();
             buttonPanel.setLayout(new FlowLayout());
             checkButton = new JButton("Check Sudoku");
             checkButton.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
-                    System.out.println("Check Sudoku");
+                    try {
+                        if (SudokuGenerator.isSudokuValid(grid.getGrid())) {
+                            server.notifyGameOver(idGrid, player.getId());
+                        } else {
+                            server.notifyCheckSudokuNotCorrect(idGrid, player.getId());
+                        }
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             });
 
-            exitButton = new JButton("Exit Game");
+            JButton exitButton = new JButton("Exit Game");
             exitButton.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
                     System.out.println("Exit player from game");
                     try {
-                        server.notifyPlayerExited(grid.getId(), player.getId());
+                        server.notifyPlayerExited(idGrid, player.getId());
                     } catch (RemoteException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -138,7 +159,7 @@ public class SudokuGUI extends JFrame {
                 public void windowClosing(WindowEvent e) {
                     System.out.println("Exit player from game");
                     try {
-                        server.notifyPlayerExited(grid.getId(), player.getId());
+                        server.notifyPlayerExited(idGrid, player.getId());
                     } catch (RemoteException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -156,18 +177,20 @@ public class SudokuGUI extends JFrame {
             this.setSize(600, 600);
             this.setResizable(true);
             this.setVisible(true);
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        } catch (NotBoundException e) {
+        } catch (RemoteException | NotBoundException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void updateGrid(Grid grid) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                for (int i = 0; i < 9; i++) {
-                    for (int j = 0; j < 9; j++) {
+        SwingUtilities.invokeLater(() -> {
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+                    if (grid.isInitial(i, j)) {
+                        cells[i][j].setEditable(false); // Disabilita la cella
+                        cells[i][j].setBackground(Color.GRAY); // Cambia lo sfondo della cella
+                        cells[i][j].setForeground(Color.WHITE);
+                    } else {
                         if (grid.getValue(i, j) > 0) {
                             cells[i][j].setText(Integer.toString(grid.getValue(i, j)));
                         }
@@ -181,7 +204,6 @@ public class SudokuGUI extends JFrame {
             }
         });
     }
-
     public void appendToConsole(String message) {
         console.append(message + "\n");
     }
@@ -196,5 +218,14 @@ public class SudokuGUI extends JFrame {
 
     public void notifyNewAuthor(String idPlayer) {
         appendToConsole("Gamer author " + idPlayer + " exited, you're the new author!!! :D");
+    }
+
+    public void notifyGameOver(String idPlayer) {
+        appendToConsole("Player " + idPlayer + " check sudoku, IT'S CORRECT!!! WELL DONE :)");
+        checkButton.setEnabled(false);
+    }
+
+    public void notifyCheckSudokuNotCorrect(String idPlayer) {
+        appendToConsole("Player " + idPlayer + " check sudoku, it's wrong :((( let's keep playing, don't give up!!! :)");
     }
 }

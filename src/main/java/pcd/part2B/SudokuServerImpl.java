@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SudokuServerImpl implements SudokuServer {
     private final Map<String, List<SudokuPlayer>> players = new ConcurrentHashMap<>();
-    private final Map<String, SudokuPlayer> authors = new ConcurrentHashMap<>();
+    private final Map<String, String> authors = new ConcurrentHashMap<>();
     private int gridCounter = 0;
     private int playerCounter = 0;
 
@@ -22,16 +22,17 @@ public class SudokuServerImpl implements SudokuServer {
     @Override
     public synchronized void createGrid() throws RemoteException {
         String idGrid = "grid-" + gridCounter++;
-        Grid grid = new Grid(idGrid);
+        Grid grid = new Grid(idGrid, SudokuGenerator.generateSudoku());
         // Crea ed esporta il player
         String idPlayer = "player-" + playerCounter++;
         SudokuPlayer player = new SudokuPlayerImpl(idPlayer, grid);
         // Ottiene il registro RMI
         Registry registry = LocateRegistry.getRegistry();
-        // Registra il player con la chiave della griglia
-        registry.rebind(idGrid, player);
+        // Registra il player
+        registry.rebind(idPlayer, player);
         players.put(idGrid, new ArrayList<>(List.of(player)));
-        authors.put(idGrid, player);
+        authors.put(idGrid, idPlayer);
+        player.startGUI();
     }
 
     @Override
@@ -41,7 +42,8 @@ public class SudokuServerImpl implements SudokuServer {
         // Ottiene il player autore della griglia
         SudokuPlayer author = null;
         try {
-            author = (SudokuPlayer) registry.lookup(idGrid);
+            String idAuthor = authors.get(idGrid);
+            author = (SudokuPlayer) registry.lookup(idAuthor);
             String idPlayer = "player-" + playerCounter++;
             SudokuPlayer player = new SudokuPlayerImpl(idPlayer, author.getGrid());
             players.get(idGrid).forEach(p -> {
@@ -51,7 +53,10 @@ public class SudokuServerImpl implements SudokuServer {
                     throw new RuntimeException(e);
                 }
             });
+            // Registra il player
+            registry.rebind(idPlayer, player);
             players.get(idGrid).add(player);
+            player.startGUI();
         } catch (NotBoundException e) {
             throw new RuntimeException(e);
         }
@@ -104,16 +109,34 @@ public class SudokuServerImpl implements SudokuServer {
         }
         // Altrimenti, se il player uscente era l'autore della griglia va eletto un nuovo player della stessa partita come autore
         // E va rimpiazzato nel registro il vecchio Player autore col nuovo
-        else if (authors.get(idGrid).getId().equals(idPlayer)) {
+        else if (authors.get(idGrid).equals(idPlayer)) {
             Random rand = new Random();
             SudokuPlayer newAuthor = currentPlayers.get(rand.nextInt(currentPlayers.size()));
-            this.authors.put(idGrid, newAuthor);
-            // Ottiene il registro RMI
-            Registry registry = LocateRegistry.getRegistry();
-            // Rimpiazza sul registro il player author utilizzando la chiave della griglia
-            registry.rebind(idGrid, newAuthor);
+            this.authors.put(idGrid, newAuthor.getId());
             // Notifica solo al nuovo player che è il nuovo author
             newAuthor.notifyNewAuthor(idPlayer);
         }
+    }
+
+    @Override
+    public void notifyGameOver(String idGrid, String idPlayer) throws RemoteException {
+        players.get(idGrid).forEach(player -> {
+            try {
+                player.notifyGameOver(idPlayer);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Override
+    public void notifyCheckSudokuNotCorrect(String idGrid, String idPlayer) throws RemoteException {
+        players.get(idGrid).forEach(player -> {
+            try {
+                player.notifyCheckSudokuNotCorrect(idPlayer);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
