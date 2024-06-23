@@ -9,11 +9,9 @@ da postino per tutti gli altri nodi Player della stessa partita del quale ogni P
 - Games (gestore delle partite)
   - Map<Integer, ActorRef>: mappa Partita -> Player Leader
   - Map<ActorRef, List<ActorRef>>: mappa il leader a tutti i componenti della partita)
-- Grid (FE del PlayerActor, contiene una griglia con tutti i numeri inseriti dai vari giocatori)
 
 ### Altri oggetti (non-attori):
-- Main (launcher per la GUI iniziale)
-- GUI (GUI iniziale di scelta tra nuova partita e unisciti a una partita)
+- App GUI iniziale di scelta tra nuova partita e unisciti a una partita)
 - Grid (?) per rappresentare la griglia che contiene i numeri e le caselle selezionate, contiene o due array
 bidimensionali di cui uno di interi che rappresenta i numeri inseriti e uno (di cosa? di interi che ci mettiamo gli id?
 o di ActorRef direttamente?) che rappresenta quali giocatori occupano le varie caselle
@@ -21,7 +19,7 @@ o un array sempre bidimensionale di Cell (nuovo oggetto che contiene un intero c
 - id del player - per rappresentare l'eventuale player che ha selezionato la cella)
 
 ## Funzionamento Sudoku
-0. Il main viene lanciato
+0. Il main viene lanciato 
    - crea un nuovo GamesActor
 1. Parte la GUI iniziale lanciata dal Main
 2. Un giocatore crea una nuova partita
@@ -29,7 +27,7 @@ o un array sempre bidimensionale di Cell (nuovo oggetto che contiene un intero c
    - crea un nuovo GridActor contenente un istanza del PlayerActor
    - mando un messaggio a GamesActor per comunicargli l'inizio della nuova partita e il relativo PlayerActor che l'ha creata
 3. Un giocatore entra in una partita
-   - crea un nuovo PlayerActor
+   - crea un nuovo PlayerActor e rispettivo GuiActor
    - il nuovo PlayerActor manda un messaggio al GamesActor per avvisare di essere entrato 
    (nella griglia che stabilita dal GamesActor stesso)
    - il GamesActor manda un messaggio al PlayerActor leader che
