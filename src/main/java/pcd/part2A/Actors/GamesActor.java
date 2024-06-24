@@ -52,7 +52,6 @@ public class GamesActor extends AbstractBehavior<GamesActorContext> {
     private Behavior<GamesActorContext> onChangeLeader(GamesActorContext.ChangeLeader changeLeader) {
         games.get(changeLeader.nGames).second().remove(changeLeader.player);
         games.put(changeLeader.nGames, new Pair<>(changeLeader.leader,games.get(changeLeader.nGames).second()));
-
         return Behaviors.same();
     }
 
@@ -64,7 +63,6 @@ public class GamesActor extends AbstractBehavior<GamesActorContext> {
     private Behavior<GamesActorContext> onJoinInGrid(GamesActorContext.JoinInGrid joinInGrid) {
         //aggiugne il player corrente nella lista di quella partita
         games.get(joinInGrid.nGame.get()).second().add(joinInGrid.player);
-        //System.out.println(games);
         //manda un messaggio al leader, con il riferimento del player
         games.get(joinInGrid.nGame.get()).first().tell(new PlayerActorContext.NotifyNewPlayer(joinInGrid.player,gamesNumber));
         return Behaviors.same();
@@ -74,7 +72,7 @@ public class GamesActor extends AbstractBehavior<GamesActorContext> {
         gamesNumber++;
         Pair<ActorRef<PlayerActorContext>, List<ActorRef<PlayerActorContext>>> allPlayers  = new Pair<>(startNewSudoku.leader, new ArrayList<ActorRef<PlayerActorContext>>());
         this.games.put(gamesNumber, allPlayers);
-        System.out.println(games);
+        //System.out.println(games);
         System.out.println("start new game");
         return Behaviors.same();
     }

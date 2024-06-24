@@ -12,8 +12,10 @@ import java.util.Optional;
 public abstract class GamesActorContext {
     public static final class StartNewSudoku extends GamesActorContext{
         public ActorRef<PlayerActorContext> leader;
-        public StartNewSudoku(ActorRef<PlayerActorContext> leader){
+        public Optional<Integer> nGame;
+        public StartNewSudoku(ActorRef<PlayerActorContext> leader, Optional<Integer> nGame){
             this.leader = leader;
+            this.nGame = nGame;
         }
     }
     public static final class JoinInGrid extends GamesActorContext{
