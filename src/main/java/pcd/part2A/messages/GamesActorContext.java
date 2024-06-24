@@ -56,8 +56,6 @@ public abstract class GamesActorContext {
     public static final class DeleteMatch extends GamesActorContext{
 
         public Integer nGames;
-
-
         public DeleteMatch(Integer nGames){
             this.nGames=nGames;
         }

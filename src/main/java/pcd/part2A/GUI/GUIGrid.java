@@ -60,6 +60,8 @@ public class GUIGrid extends JFrame {
             }
         }
         JButton exitButton = new JButton("Exit Game");
+        JButton crashButton = new JButton("Test Crush");
+
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -68,6 +70,8 @@ public class GUIGrid extends JFrame {
         });
 
         JButton solveButton = new JButton("Solve");
+
+
         solveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -75,9 +79,17 @@ public class GUIGrid extends JFrame {
             }
         });
 
+        crashButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                player.tell(new PlayerActorContext.SimulateCrash());
+            }
+        });
+
         JPanel controlPanel = new JPanel();
         controlPanel.add(solveButton);
         controlPanel.add(exitButton);
+        controlPanel.add(crashButton);
 
         add(panel, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);

@@ -122,4 +122,7 @@ public abstract class PlayerActorContext {
             this.player = player;
         }
     }
+
+    public static final class SimulateCrash extends PlayerActorContext{
+    }
 }

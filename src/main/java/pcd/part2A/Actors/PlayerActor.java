@@ -7,13 +7,10 @@ import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import akka.actor.typed.receptionist.Receptionist;
-import jnr.ffi.annotations.In;
 import pcd.part2A.GUI.GUIGrid;
 import pcd.part2A.SudokuGenerator;
-import pcd.part2A.Utils;
 import pcd.part2A.messages.GamesActorContext;
 import pcd.part2A.messages.PlayerActorContext;
-import scala.Int;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +45,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     @Override
     public Receive<PlayerActorContext> createReceive() {
         return newReceiveBuilder()
+                .onMessage(PlayerActorContext.SimulateCrash.class, this::onCrash)
                 .onMessage(PlayerActorContext.SelectCell.class, this::onCellSelected)
                 .onMessage(PlayerActorContext.LeaderSelect.class, this::onLeaderSelect)
                 .onMessage(PlayerActorContext.SelectCellOfEveryone.class, this::onCellSelectedForEveryone)
@@ -67,6 +65,10 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 .onMessage(PlayerActorContext.DeletePlayer.class, this::onExitPlayer)
                 .onMessage(PlayerActorContext.ChangeLeader.class, this::onExitLeader)
                 .build();
+    }
+
+    private Behavior<PlayerActorContext> onCrash(PlayerActorContext.SimulateCrash simulateCrash) {
+        throw new IllegalArgumentException();
     }
 
     private void notifyGamesActor(ActorContext<PlayerActorContext> context, Boolean isLeader, Optional<Integer> nGame) {
@@ -114,12 +116,15 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         return Behaviors.same();
     }
 
+    //messaggio ricevuto solo dal leader
     private Behavior<PlayerActorContext> onNotifyNewPlayer(PlayerActorContext.NotifyNewPlayer notifyNewPlayer) {
         //aggiorno la mappa players
         otherPlayers.get().add(notifyNewPlayer.newPlayer);
+        getContext().watchWith(notifyNewPlayer.newPlayer, new PlayerActorContext.LeaveGame(notifyNewPlayer.newPlayer));
         //gli devo mandare leader, stato della cella e lista players
         notifyNewPlayer.newPlayer.tell(new PlayerActorContext.SendData(leader, otherPlayers, this.grid));
         return Behaviors.same();
+
     }
 
     private synchronized Behavior<PlayerActorContext> onLeaderSelect(PlayerActorContext.LeaderSelect leaderSelect) {
@@ -137,6 +142,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         gui.render(grid);
         this.otherPlayers = sendData.otherPlayers;
         System.out.println("onSendData");
+        getContext().watchWith(this.leader, new PlayerActorContext.LeaveGame(this.leader));
         return Behaviors.same();
     }
 
