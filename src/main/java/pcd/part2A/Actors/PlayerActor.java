@@ -37,8 +37,8 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         this.games = games;
         gui = new GUIGrid(context.getSelf());
         gui.setVisible(true);
-        notifyGamesActor(context,isLeader,nGame);
-        this.nGame=nGame;
+        notifyGamesActor(context, isLeader, nGame);
+        this.nGame = nGame;
     }
 
     public static Behavior<PlayerActorContext> create(Boolean isLeader, ActorRef<GamesActorContext> games, Optional<Integer> nGame) {
@@ -68,6 +68,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 .onMessage(PlayerActorContext.ChangeLeader.class, this::onExitLeader)
                 .build();
     }
+
     private void notifyGamesActor(ActorContext<PlayerActorContext> context, Boolean isLeader, Optional<Integer> nGame) {
         if (this.isLeader) {
             this.grid = SudokuGenerator.generateSudoku();
@@ -78,41 +79,41 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
             this.games.tell(new GamesActorContext.JoinInGrid(context.getSelf(), nGame));
         }
     }
+
     private Behavior<PlayerActorContext> onExitLeader(PlayerActorContext.ChangeLeader changeLeader) {
         otherPlayers.get().remove(changeLeader.player);
-        this.leader=changeLeader.player;
+        this.leader = changeLeader.player;
         return Behaviors.same();
     }
+
     private Behavior<PlayerActorContext> onExitPlayer(PlayerActorContext.DeletePlayer deletePlayer) {
         otherPlayers.get().remove(deletePlayer.player);
         return Behaviors.same();
     }
+
     private Behavior<PlayerActorContext> onLeaveGame(PlayerActorContext.LeaveGame leaveGame) {
         //bisogna controllare che l'utente non sia il leader
-            //se non è rimasto solo questo giocatore nella list
-            if (!otherPlayers.get().isEmpty()){
+        //se non è rimasto solo questo giocatore nella list
+        if (!otherPlayers.get().isEmpty()) {
+            //se è il leader va cambiato il leader
+            if (this.leader.equals(leaveGame.player)) {
+                ActorRef<PlayerActorContext> newLeader = otherPlayers.get().getFirst();
+                games.tell(new GamesActorContext.ChangeLeader(newLeader, leaveGame.player, nGame.get()));
+                otherPlayers.get().forEach(player -> player.tell(new PlayerActorContext.ChangeLeader(newLeader)));
 
-                //se è il leader va cambiato il leader
-
-                if(this.leader.equals(leaveGame.player)){
-                    ActorRef<PlayerActorContext> newLeader = otherPlayers.get().getFirst();
-                    games.tell(new GamesActorContext.ChangeLeader(newLeader,leaveGame.player,nGame.get()));
-                    otherPlayers.get().forEach(player -> player.tell(new PlayerActorContext.ChangeLeader(newLeader)));
-
-                    //manda un messaggio dove dici a tutti di cambiare il leader con quello che gli passo cavandolo da otherPlayers
-            }else {
-                    games.tell(new GamesActorContext.DeletePlayer(leaveGame.player,nGame.get()));
-                    otherPlayers.get().forEach(player -> player.tell(new PlayerActorContext.DeletePlayer(leaveGame.player)));
-                    this.leader.tell(new PlayerActorContext.DeletePlayer(leaveGame.player));
+                //manda un messaggio dove dici a tutti di cambiare il leader con quello che gli passo cavandolo da otherPlayers
+            } else {
+                games.tell(new GamesActorContext.DeletePlayer(leaveGame.player, nGame.get()));
+                otherPlayers.get().forEach(player -> player.tell(new PlayerActorContext.DeletePlayer(leaveGame.player)));
+                this.leader.tell(new PlayerActorContext.DeletePlayer(leaveGame.player));
             }
-                games.tell(new GamesActorContext.DeleteMatch(nGame.get()));
-
+            //se sono l'ultimo della partita la elimino
+        }else{
+            games.tell(new GamesActorContext.DeleteMatch(nGame.get()));
         }
-
-        //bisogna mandare un messaggio agli altri per toglierlo dalla lista
-        //e lo togliamo dal cluster
         return Behaviors.same();
     }
+
     private Behavior<PlayerActorContext> onNotifyNewPlayer(PlayerActorContext.NotifyNewPlayer notifyNewPlayer) {
         //aggiorno la mappa players
         otherPlayers.get().add(notifyNewPlayer.newPlayer);
@@ -120,6 +121,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         notifyNewPlayer.newPlayer.tell(new PlayerActorContext.SendData(leader, otherPlayers, this.grid));
         return Behaviors.same();
     }
+
     private synchronized Behavior<PlayerActorContext> onLeaderSelect(PlayerActorContext.LeaderSelect leaderSelect) {
         gui.cleanGUI();
         gui.selectCell(leaderSelect.row, leaderSelect.col);
@@ -128,6 +130,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 -> player.tell(new PlayerActorContext.SelectCellOfEveryone(leaderSelect.row, leaderSelect.col))));
         return Behaviors.same();
     }
+
     private Behavior<PlayerActorContext> onSendData(PlayerActorContext.SendData sendData) {
         this.leader = sendData.leader;
         this.grid = sendData.grid;
@@ -136,12 +139,14 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         System.out.println("onSendData");
         return Behaviors.same();
     }
+
     private Behavior<PlayerActorContext> onSudokuSolved(PlayerActorContext.SolveSudoku solveSudoku) {
         int[][] solvedGrid = SudokuGenerator.solveSudoku(this.grid);
         gui.render(solvedGrid);
         leader.tell(new PlayerActorContext.LeaderSolve(solvedGrid));
         return Behaviors.same();
     }
+
     private Behavior<PlayerActorContext> onLeaderSolve(PlayerActorContext.LeaderSolve leaderSolve) {
         this.grid = leaderSolve.solvedGrid;
         gui.render(this.grid);
@@ -150,11 +155,13 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 -> player.tell(new PlayerActorContext.SolveOfEveryone(leaderSolve.solvedGrid))));
         return Behaviors.same();
     }
+
     private Behavior<PlayerActorContext> onSolveOfEveryone(PlayerActorContext.SolveOfEveryone solveOfEveryone) {
         this.grid = solveOfEveryone.solvedGrid;
         gui.render(this.grid);
         return Behaviors.same();
     }
+
     private Behavior<PlayerActorContext> onValueChanged(PlayerActorContext.ChangeCell changeCell) {
         //System.out.println("message value change received: ");
         //System.out.println("row: " + changeCell.row +" col: " + changeCell.col + " value: " + changeCell.value);
@@ -162,6 +169,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         leader.tell(new PlayerActorContext.LeaderChange(changeCell.row, changeCell.col, changeCell.value));
         return Behaviors.same();
     }
+
     private synchronized Behavior<PlayerActorContext> onLeaderChange(PlayerActorContext.LeaderChange leaderChange) {
         //System.out.println("leader received message value changed");
         this.grid[leaderChange.row][leaderChange.col] = leaderChange.value;
@@ -171,17 +179,20 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 -> player.tell(new PlayerActorContext.ChangeCellOfEveryone(leaderChange.row, leaderChange.col, leaderChange.value))));
         return Behaviors.same();
     }
+
     private Behavior<PlayerActorContext> onValueChangeForEveryone(PlayerActorContext.ChangeCellOfEveryone setCell) {
         this.grid[setCell.row][setCell.col] = setCell.value;
         gui.render(grid);
         return Behaviors.same();
     }
+
     private Behavior<PlayerActorContext> onCellSelected(PlayerActorContext.SelectCell selectCell) {
         //System.out.println("message cell selected received");
         //System.out.println("row: " + selectCell.row + " col: " + selectCell.col);
         leader.tell(new PlayerActorContext.LeaderSelect(selectCell.row, selectCell.col));
         return Behaviors.same();
     }
+
     private Behavior<PlayerActorContext> onCellSelectedForEveryone(PlayerActorContext.SelectCellOfEveryone selectCellOfEveryone) {
         gui.cleanGUI();
         gui.selectCell(selectCellOfEveryone.row, selectCellOfEveryone.col);
