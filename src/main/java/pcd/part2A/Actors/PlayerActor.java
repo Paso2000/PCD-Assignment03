@@ -37,11 +37,9 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         notifyGamesActor(context, isLeader, nGame);
         this.nGame = nGame;
     }
-
     public static Behavior<PlayerActorContext> create(Boolean isLeader, ActorRef<GamesActorContext> games, Optional<Integer> nGame) {
         return Behaviors.setup(ctx -> new PlayerActor(ctx, isLeader, games, nGame));
     }
-
     @Override
     public Receive<PlayerActorContext> createReceive() {
         return newReceiveBuilder()
@@ -49,24 +47,21 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 .onMessage(PlayerActorContext.SelectCell.class, this::onCellSelected)
                 .onMessage(PlayerActorContext.LeaderSelect.class, this::onLeaderSelect)
                 .onMessage(PlayerActorContext.SelectCellOfEveryone.class, this::onCellSelectedForEveryone)
-
                 .onMessage(PlayerActorContext.ChangeCell.class, this::onValueChanged)
                 .onMessage(PlayerActorContext.LeaderChange.class, this::onLeaderChange)
                 .onMessage(PlayerActorContext.ChangeCellOfEveryone.class, this::onValueChangeForEveryone)
-
                 .onMessage(PlayerActorContext.SolveSudoku.class, this::onSudokuSolved)
                 .onMessage(PlayerActorContext.LeaderSolve.class, this::onLeaderSolve)
                 .onMessage(PlayerActorContext.SolveOfEveryone.class, this::onSolveOfEveryone)
-
                 .onMessage(PlayerActorContext.NotifyNewPlayer.class, this::onNotifyNewPlayer)
                 .onMessage(PlayerActorContext.SendData.class, this::onSendData)
-
                 .onMessage(PlayerActorContext.LeaveGame.class, this::onLeaveGame)
                 .onMessage(PlayerActorContext.DeletePlayer.class, this::onExitPlayer)
                 .onMessage(PlayerActorContext.ChangeLeader.class, this::onExitLeader)
                 .build();
     }
 
+    //mando un'eccezzione per siulare il crash
     private Behavior<PlayerActorContext> onCrash(PlayerActorContext.SimulateCrash simulateCrash) {
         throw new IllegalArgumentException();
     }
@@ -93,6 +88,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         return Behaviors.same();
     }
 
+    //metodo per capire chi sta uscendo dalla partita e gestirlo
     private Behavior<PlayerActorContext> onLeaveGame(PlayerActorContext.LeaveGame leaveGame) {
         //bisogna controllare che l'utente non sia il leader
         //se non è rimasto solo questo giocatore nella list
@@ -109,8 +105,8 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                 otherPlayers.get().forEach(player -> player.tell(new PlayerActorContext.DeletePlayer(leaveGame.player)));
                 this.leader.tell(new PlayerActorContext.DeletePlayer(leaveGame.player));
             }
-            //se sono l'ultimo della partita la elimino
         }else{
+            //se sono l'ultimo della partita la elimino
             games.tell(new GamesActorContext.DeleteMatch(nGame.get()));
         }
         return Behaviors.same();
@@ -120,6 +116,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     private Behavior<PlayerActorContext> onNotifyNewPlayer(PlayerActorContext.NotifyNewPlayer notifyNewPlayer) {
         //aggiorno la mappa players
         otherPlayers.get().add(notifyNewPlayer.newPlayer);
+        //faccio controllare al leader se i giocatori che entrano vanno in crash
         getContext().watchWith(notifyNewPlayer.newPlayer, new PlayerActorContext.LeaveGame(notifyNewPlayer.newPlayer));
         //gli devo mandare leader, stato della cella e lista players
         notifyNewPlayer.newPlayer.tell(new PlayerActorContext.SendData(leader, otherPlayers, this.grid));
@@ -142,7 +139,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         gui.render(grid);
         this.otherPlayers = sendData.otherPlayers;
         System.out.println("onSendData");
-        getContext().watchWith(this.leader, new PlayerActorContext.LeaveGame(this.leader));
+        getContext().watchWith(this.leader, new PlayerActorContext.LeaveGame(this.leader));//faccio controllare che il leader no vada in crash da chi entra
         return Behaviors.same();
     }
 
@@ -204,7 +201,5 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
         gui.selectCell(selectCellOfEveryone.row, selectCellOfEveryone.col);
         return Behaviors.same();
     }
-
-
 }
 

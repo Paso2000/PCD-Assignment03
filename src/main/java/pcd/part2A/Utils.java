@@ -16,19 +16,19 @@ import scala.Int;
 import java.util.*;
 
 public class Utils {
-    public static ActorRef startup(String role, int port, Optional<Integer> nGame) {
+    public static void startup(String role, int port, Optional<Integer> nGame) {
         Map<String, Object> overrides = new HashMap<>();
         overrides.put("akka.remote.artery.canonical.port", port);
         overrides.put("akka.cluster.roles", Collections.singletonList(role));
         Config config = ConfigFactory.parseMap(overrides)
                 .withFallback(ConfigFactory.load("transformation"));
-        return ActorSystem.create(RootBehavior.create(nGame), "ClusterSystem", config);
+        ActorSystem.create(RootBehavior.create(nGame), "ClusterSystem", config);
     }
 
     public static class RootBehavior {
         static ActorRef<GamesActorContext> games;
 
-        public static Behavior<ActorRef<GamesActorContext>> create(Optional<Integer> nGame) {
+        public static Behavior<Void> create(Optional<Integer> nGame) {
             return Behaviors.setup(context -> {
                 //inserisce il nodo nel cluster
                 Cluster cluster = Cluster.get(context.getSystem());
