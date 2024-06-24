@@ -89,8 +89,11 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     }
     private Behavior<PlayerActorContext> onLeaveGame(PlayerActorContext.LeaveGame leaveGame) {
         //bisogna controllare che l'utente non sia il leader
-        //se è il leader va cambiato il leader
+            //se non è rimasto solo questo giocatore nella list
             if (!otherPlayers.get().isEmpty()){
+
+                //se è il leader va cambiato il leader
+
                 if(this.leader.equals(leaveGame.player)){
                     ActorRef<PlayerActorContext> newLeader = otherPlayers.get().getFirst();
                     games.tell(new GamesActorContext.ChangeLeader(newLeader,leaveGame.player,nGame.get()));
@@ -102,6 +105,7 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
                     otherPlayers.get().forEach(player -> player.tell(new PlayerActorContext.DeletePlayer(leaveGame.player)));
                     this.leader.tell(new PlayerActorContext.DeletePlayer(leaveGame.player));
             }
+                games.tell(new GamesActorContext.DeleteMatch(nGame.get()));
 
         }
         //bisogna mandare un messaggio agli altri per toglierlo dalla lista

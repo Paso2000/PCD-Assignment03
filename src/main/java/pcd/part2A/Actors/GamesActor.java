@@ -40,7 +40,13 @@ public class GamesActor extends AbstractBehavior<GamesActorContext> {
                 .onMessage(GamesActorContext.JoinInGrid.class, this::onJoinInGrid)
                 .onMessage(GamesActorContext.DeletePlayer.class, this::onDeletePlayer)
                 .onMessage(GamesActorContext.ChangeLeader.class, this::onChangeLeader)
+                .onMessage(GamesActorContext.DeleteMatch.class, this::onDeleteMatch)
                 .build();
+    }
+
+    private Behavior<GamesActorContext> onDeleteMatch(GamesActorContext.DeleteMatch deleteMatch) {
+        games.remove(deleteMatch.nGames);
+        return Behaviors.same();
     }
 
     private Behavior<GamesActorContext> onChangeLeader(GamesActorContext.ChangeLeader changeLeader) {
