@@ -109,31 +109,6 @@ public class GUIGrid extends JFrame {
         }
     }
 
-    /*private class CellDocumentListener implements DocumentListener {
-        private int row, col;
-
-        public CellDocumentListener(int row, int col) {
-            this.row = row;
-            this.col = col;
-        }
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            int value = Integer.parseInt(cells[row][col].getText());
-            player.tell(new PlayerActorContext.ChangeCell(row, col, value));
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            //Chiamato quando viene rimosso del testo.
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            //Chiamato quando viene cambiato un attributo del documento
-        }
-    }*/
-
    //per focus
     private class CellFocusListener implements FocusListener {
         private int row, col;

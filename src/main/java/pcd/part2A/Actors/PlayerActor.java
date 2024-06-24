@@ -48,21 +48,21 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
     @Override
     public Receive<PlayerActorContext> createReceive() {
         return newReceiveBuilder()
-                //GUI -> player
                 .onMessage(PlayerActorContext.SelectCell.class, this::onCellSelected)
-                // player -> leader
                 .onMessage(PlayerActorContext.LeaderSelect.class, this::onLeaderSelect)
-                //leader -> players
                 .onMessage(PlayerActorContext.SelectCellOfEveryone.class, this::onCellSelectedForEveryone)
-                //GUI -> player
+
                 .onMessage(PlayerActorContext.ChangeCell.class, this::onValueChanged)
                 .onMessage(PlayerActorContext.LeaderChange.class, this::onLeaderChange)
                 .onMessage(PlayerActorContext.ChangeCellOfEveryone.class, this::onValueChangeForEveryone)
+
                 .onMessage(PlayerActorContext.SolveSudoku.class, this::onSudokuSolved)
                 .onMessage(PlayerActorContext.LeaderSolve.class, this::onLeaderSolve)
                 .onMessage(PlayerActorContext.SolveOfEveryone.class, this::onSolveOfEveryone)
+
                 .onMessage(PlayerActorContext.NotifyNewPlayer.class, this::onNotifyNewPlayer)
                 .onMessage(PlayerActorContext.SendData.class, this::onSendData)
+
                 .onMessage(PlayerActorContext.LeaveGame.class, this::onLeaveGame)
                 .onMessage(PlayerActorContext.DeletePlayer.class, this::onExitPlayer)
                 .onMessage(PlayerActorContext.ChangeLeader.class, this::onExitLeader)
@@ -104,7 +104,6 @@ public class PlayerActor extends AbstractBehavior<PlayerActorContext> {
             }
 
         }
-
         //bisogna mandare un messaggio agli altri per toglierlo dalla lista
         //e lo togliamo dal cluster
         return Behaviors.same();

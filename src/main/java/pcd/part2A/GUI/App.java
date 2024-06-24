@@ -1,8 +1,5 @@
 package pcd.part2A.GUI;
 
-import jnr.ffi.annotations.In;
-import scala.Int;
-
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
