@@ -135,7 +135,7 @@ public class GUIGrid extends JFrame {
             cells[row][col].setBackground(Color.CYAN);
             player.tell(new PlayerActorContext.SelectCell(row, col));
         }
-
+        
         @Override
         public void focusLost(FocusEvent e) {
             cells[row][col].setBackground(Color.WHITE);

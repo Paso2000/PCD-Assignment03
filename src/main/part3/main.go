@@ -10,6 +10,8 @@ import (
 // globale cosi tutti la vedono
 var wg sync.WaitGroup
 
+var subWg sync.WaitGroup
+
 type Msg struct {
 	content string
 	id      int // Id del player.
@@ -25,22 +27,18 @@ func main() {
 	MainChan := make(chan string)
 	resultChannel := make(chan Msg)
 
-	var subWg sync.WaitGroup
-
 	//lancio l'oracolo
-	go launchOracle(max, nPlayers, MainChan, resultChannel, subWg)
-
+	go launchOracle(max, nPlayers, MainChan, resultChannel)
 	//lacio il player
 	for i := 0; i < nPlayers; i++ {
 		//i è il nome del player
-		subWg.Add(1)
-		go launchPlayers(max, i, MainChan, resultChannel, subWg)
+		go launchPlayers(max, i, MainChan, resultChannel)
 	}
 	wg.Wait()
 }
 
 // Define l'oracolo
-func launchOracle(max int, nPlayers int, mainChan chan string, resultChannel chan Msg, subWg sync.WaitGroup) {
+func launchOracle(max int, nPlayers int, mainChan chan string, resultChannel chan Msg) {
 	secretNumber := rand.Intn(max + 1)
 	isGuessed := false
 
@@ -71,6 +69,7 @@ func launchOracle(max int, nPlayers int, mainChan chan string, resultChannel cha
 				isGuessed = true // Impostiamo il flag al fine di fare inviare il messaggio di fine.
 			}
 		}
+		subWg.Add(5)
 		subWg.Wait()
 		fmt.Println("Fine di un turno.")
 
@@ -82,11 +81,11 @@ func launchOracle(max int, nPlayers int, mainChan chan string, resultChannel cha
 }
 
 // Define giocatore
-func launchPlayers(max int, id int, mainChan chan string, resultChannel chan Msg, subWg sync.WaitGroup) {
-	wg.Add(1) // Aggiungiamo un elemento al gruppo di attesa.
-	subWg.Done()
+func launchPlayers(max int, id int, mainChan chan string, resultChannel chan Msg) {
+	wg.Add(1)
 	var min int = 0
-	for true { // Continuo finchè qualcuno non ha indovinato.
+	for true {
+		// Continuo finchè qualcuno non ha indovinato.
 		message := <-mainChan // Aspetto il messaggio di inizio.
 		if message == "Start" {
 			var num = rand.Intn(max-min+1) + min                     // Aggiorno il range ad ogni iterazione.
@@ -96,19 +95,27 @@ func launchPlayers(max int, id int, mainChan chan string, resultChannel chan Msg
 			case "lower":
 				fmt.Println("[player: ", id, "] attemp: ", num, " -> secret number is greater")
 				max = num - 1
+				subWg.Done()
+
 			case "greater":
 				fmt.Println("[player: ", id, "] attemp: ", num, " -> secret number is lower")
 				min = num + 1
+				subWg.Done()
+
 			case "winnerNotMe":
 				// Accade quando il numero è corretto ma è stato gestito dopo a un altro messaggio di vittoria.
 				fmt.Println("[player: ", id, "] attemp: correct but too late")
+				subWg.Done()
 			default:
 				fmt.Println("[player: ", id, "] attemp: ", num, " -> winner")
+				subWg.Done()
+
 			}
 		} else if message == "finish" {
 			fmt.Println("[player: ", id, "] -> finish")
 			break
 		}
 	}
+
 	defer wg.Done() // Segnalo il completamento.
 }
