@@ -7,12 +7,11 @@ import (
 	"sync"
 )
 
-// globale cosi tutti la vedono
+// Globale, (le sync non si passano per riferimento)
 var wg sync.WaitGroup
-
 var subWg sync.WaitGroup
 
-type Msg struct {
+type Attempt struct {
 	content string
 	id      int // Id del player.
 }
@@ -22,41 +21,34 @@ func main() {
 
 	var nPlayers = 5
 	var max = 100
+	MainChan := make(chan string)       //canale principale dove si scambiano lo stato
+	resultChannel := make(chan Attempt) //canale dei risultati dove si scambiano i tentativi
 
-	//initialization i canali di comunicazione
-	MainChan := make(chan string)
-	resultChannel := make(chan Msg)
-
-	//lancio l'oracolo
 	go launchOracle(max, nPlayers, MainChan, resultChannel)
-	//lacio il player
 	for i := 0; i < nPlayers; i++ {
-		//i è il nome del player
 		go launchPlayers(max, i, MainChan, resultChannel)
 	}
+
 	wg.Wait()
 }
 
 // Define l'oracolo
-func launchOracle(max int, nPlayers int, mainChan chan string, resultChannel chan Msg) {
+func launchOracle(max int, nPlayers int, mainChan chan string, resultChannel chan Attempt) {
 	secretNumber := rand.Intn(max + 1)
 	isGuessed := false
-
-	//finchè non indovinano
 	for !isGuessed {
+		//fa partire i player
 		for i := 0; i < nPlayers; i++ {
 			mainChan <- "Start"
 		}
 		// Gestiamo i messaggi dei numeri proposti, per ciascun player.
 		for i := 0; i < nPlayers; i++ {
-			//prendo i valore dal canale dei risultati
 			attempt := <-resultChannel
-			numReceived, err := strconv.Atoi(attempt.content) // Lo convertiamo.
+			numReceived, err := strconv.Atoi(attempt.content)
 			if err != nil {
-				fmt.Println("Errore durante la conversione della stringa in intero:", err)
+				fmt.Println("Error:", err)
 				return
 			}
-			// In base al numero gli indichiamo se è basso, alto, è quello indovinato oppure ho indovinato ma in ritardo rispetto ad un altro.
 			if numReceived > secretNumber {
 				mainChan <- "lower"
 			} else if numReceived < secretNumber {
@@ -65,8 +57,7 @@ func launchOracle(max int, nPlayers int, mainChan chan string, resultChannel cha
 				mainChan <- "winnerNotMe"
 			} else {
 				mainChan <- "winner"
-				//winnerId = attempt.id
-				isGuessed = true // Impostiamo il flag al fine di fare inviare il messaggio di fine.
+				isGuessed = true
 			}
 		}
 		subWg.Add(5)
@@ -81,16 +72,18 @@ func launchOracle(max int, nPlayers int, mainChan chan string, resultChannel cha
 }
 
 // Define giocatore
-func launchPlayers(max int, id int, mainChan chan string, resultChannel chan Msg) {
+func launchPlayers(max int, id int, mainChan chan string, resultChannel chan Attempt) {
 	wg.Add(1)
 	var min int = 0
 	for true {
 		// Continuo finchè qualcuno non ha indovinato.
-		message := <-mainChan // Aspetto il messaggio di inizio.
+		message := <-mainChan
 		if message == "Start" {
-			var num = rand.Intn(max-min+1) + min                     // Aggiorno il range ad ogni iterazione.
-			resultChannel <- Msg{content: strconv.Itoa(num), id: id} // invio il numero random del tentativo sul canale pubblico per non determinismo.
-			message := <-mainChan                                    // Attendo la risposta dall'oracolo.
+			var num = rand.Intn(max-min+1) + min
+			// player# scrive nel canale il suo tentativo
+			resultChannel <- Attempt{content: strconv.Itoa(num), id: id}
+			// Attendo la risposta dall'oracolo.
+			message := <-mainChan
 			switch message {
 			case "lower":
 				fmt.Println("[player: ", id, "] attemp: ", num, " -> secret number is greater")
@@ -116,6 +109,5 @@ func launchPlayers(max int, id int, mainChan chan string, resultChannel chan Msg
 			break
 		}
 	}
-
 	defer wg.Done() // Segnalo il completamento.
 }
