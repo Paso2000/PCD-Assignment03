@@ -4,12 +4,9 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
-	"sync"
 )
 
 // Globale, (le sync non si passano per riferimento)
-var wg sync.WaitGroup
-var subWg sync.WaitGroup
 
 type Attempt struct {
 	content string
@@ -17,23 +14,25 @@ type Attempt struct {
 }
 
 func main() {
-	wg.Add(1)
 
 	var nPlayers = 5
 	var max = 100
-	MainChan := make(chan string)       //canale principale dove si scambiano lo stato
-	resultChannel := make(chan Attempt) //canale dei risultati dove si scambiano i tentativi
+	mainChan := make(chan string)     //canale principale dove si scambiano lo stato
+	attemptChan := make(chan Attempt) //canale dei risultati dove si scambiano i tentativi
+	roundChan := make(chan string)    //canale per la sincronizzazione dei turni
+	gameChan := make(chan bool)       //canale per la sincronizzazione della partita
 
-	go launchOracle(max, nPlayers, MainChan, resultChannel)
+	go launchOracle(max, nPlayers, mainChan, attemptChan, roundChan)
 	for i := 0; i < nPlayers; i++ {
-		go launchPlayers(max, i, MainChan, resultChannel)
+		go launchPlayers(max, i, mainChan, attemptChan, roundChan, gameChan)
 	}
-
-	wg.Wait()
+	for i := 0; i < nPlayers; i++ {
+		<-gameChan
+	}
 }
 
 // Define l'oracolo
-func launchOracle(max int, nPlayers int, mainChan chan string, resultChannel chan Attempt) {
+func launchOracle(max int, nPlayers int, mainChan chan string, attemptChan chan Attempt, roundChan chan string) {
 	secretNumber := rand.Intn(max + 1)
 	isGuessed := false
 	for !isGuessed {
@@ -43,7 +42,7 @@ func launchOracle(max int, nPlayers int, mainChan chan string, resultChannel cha
 		}
 		// Gestiamo i messaggi dei numeri proposti, per ciascun player.
 		for i := 0; i < nPlayers; i++ {
-			attempt := <-resultChannel
+			attempt := <-attemptChan
 			numReceived, err := strconv.Atoi(attempt.content)
 			if err != nil {
 				fmt.Println("Error:", err)
@@ -54,14 +53,15 @@ func launchOracle(max int, nPlayers int, mainChan chan string, resultChannel cha
 			} else if numReceived < secretNumber {
 				mainChan <- "greater"
 			} else if isGuessed {
-				mainChan <- "winnerNotMe"
+				mainChan <- "winnerLate"
 			} else {
 				mainChan <- "winner"
 				isGuessed = true
 			}
 		}
-		subWg.Add(5)
-		subWg.Wait()
+		for i := 0; i < nPlayers; i++ {
+			<-roundChan
+		}
 		fmt.Println("Fine di un turno.")
 
 	}
@@ -72,8 +72,7 @@ func launchOracle(max int, nPlayers int, mainChan chan string, resultChannel cha
 }
 
 // Define giocatore
-func launchPlayers(max int, id int, mainChan chan string, resultChannel chan Attempt) {
-	wg.Add(1)
+func launchPlayers(max int, id int, mainChan chan string, attemptChan chan Attempt, roundChan chan string, gameChan chan bool) {
 	var min int = 0
 	for true {
 		// Continuo finchè qualcuno non ha indovinato.
@@ -81,33 +80,30 @@ func launchPlayers(max int, id int, mainChan chan string, resultChannel chan Att
 		if message == "Start" {
 			var num = rand.Intn(max-min+1) + min
 			// player# scrive nel canale il suo tentativo
-			resultChannel <- Attempt{content: strconv.Itoa(num), id: id}
+			attemptChan <- Attempt{content: strconv.Itoa(num), id: id}
 			// Attendo la risposta dall'oracolo.
 			message := <-mainChan
 			switch message {
 			case "lower":
 				fmt.Println("[player: ", id, "] attemp: ", num, " -> secret number is greater")
 				max = num - 1
-				subWg.Done()
 
 			case "greater":
 				fmt.Println("[player: ", id, "] attemp: ", num, " -> secret number is lower")
 				min = num + 1
-				subWg.Done()
 
-			case "winnerNotMe":
+			case "winnerLate":
 				// Accade quando il numero è corretto ma è stato gestito dopo a un altro messaggio di vittoria.
 				fmt.Println("[player: ", id, "] attemp: correct but too late")
-				subWg.Done()
+
 			default:
 				fmt.Println("[player: ", id, "] attemp: ", num, " -> winner")
-				subWg.Done()
-
 			}
+			roundChan <- "turno finito"
 		} else if message == "finish" {
 			fmt.Println("[player: ", id, "] -> finish")
+			gameChan <- true
 			break
 		}
 	}
-	defer wg.Done() // Segnalo il completamento.
 }
